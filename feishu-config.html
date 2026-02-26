@@ -545,11 +545,73 @@
         </div>
     </div>
 
-    <script src="scripts/feishu.js"></script>
     <script>
+        // 飞书集成功能
+        const FeishuConfig = {
+            loadConfig() {
+                const saved = localStorage.getItem('feishuConfig');
+                return saved ? JSON.parse(saved) : {
+                    enabled: false,
+                    mode: 'webhook',
+                    webhookUrl: '',
+                    appId: '',
+                    appSecret: '',
+                    messageTemplate: ''
+                };
+            },
+
+            saveConfig(config) {
+                localStorage.setItem('feishuConfig', JSON.stringify(config));
+            },
+
+            async testConnection() {
+                const mode = document.querySelector('input[name="mode"]:checked').value;
+
+                if (mode === 'webhook') {
+                    const webhookUrl = document.getElementById('webhookUrl').value.trim();
+                    if (!webhookUrl) {
+                        throw new Error('请先输入Webhook URL');
+                    }
+
+                    // 发送测试消息
+                    const response = await fetch(webhookUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            msg_type: 'text',
+                            content: {
+                                text: '🎉 入职周年提醒系统\n\n✅ Webhook连接测试成功！\n系统已准备就绪。'
+                            }
+                        })
+                    });
+
+                    const result = await response.json();
+
+                    if (result.code === 0) {
+                        return {
+                            success: true,
+                            message: '连接测试成功！请检查飞书群是否收到测试消息。'
+                        };
+                    } else {
+                        return {
+                            success: false,
+                            message: `飞书返回错误: ${result.msg || '未知错误'} (code: ${result.code})`
+                        };
+                    }
+                } else {
+                    // API模式暂不支持测试
+                    return {
+                        success: false,
+                        message: 'API模式测试功能开发中，请手动验证配置。'
+                    };
+                }
+            }
+        };
+
         // 初始化
-        const feishu = new FeishuIntegration();
-        let config = feishu.loadConfig();
+        let config = FeishuConfig.loadConfig();
 
         // 加载配置
         document.getElementById('feishuEnabled').checked = config.enabled || false;
@@ -610,7 +672,7 @@
             }
 
             // 保存
-            feishu.saveConfig(newConfig);
+            FeishuConfig.saveConfig(newConfig);
             showSuccess('配置保存成功！');
         }
 
@@ -622,7 +684,7 @@
             try {
                 showInfo('正在测试连接...');
 
-                const result = await feishu.testConnection();
+                const result = await FeishuConfig.testConnection();
 
                 document.getElementById('testResultContent').textContent = JSON.stringify(result, null, 2);
                 document.getElementById('testResult').classList.add('show');
