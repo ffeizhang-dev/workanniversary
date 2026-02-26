@@ -1,0 +1,1964 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>入职周年祝福提醒系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: #F7F8FA;
+            min-height: 100vh;
+            padding: 0;
+            color: #1D2129;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        .header {
+            background: white;
+            padding: 24px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #E5E8EF;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .header-content {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1D2129;
+            margin: 0;
+            letter-spacing: -0.3px;
+        }
+
+        .header .badge {
+            display: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: #4E5969;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            transition: color 0.2s;
+            cursor: pointer;
+        }
+
+        .nav-link:hover {
+            color: #00796B;
+        }
+
+        .main-wrapper {
+            padding: 48px;
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+
+        .today-anniversaries {
+            background: linear-gradient(135deg, #00796B 0%, #00695C 100%);
+            padding: 64px 48px;
+            border-radius: 16px;
+            margin-bottom: 48px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .today-anniversaries::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+        }
+
+        .today-anniversaries h2 {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 32px;
+            color: white;
+            position: relative;
+            z-index: 1;
+        }
+
+        .today-anniversaries h2::before {
+            display: none;
+        }
+
+        .anniversary-list {
+            display: grid;
+            gap: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .anniversary-item {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 24px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s;
+        }
+
+        .anniversary-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .anniversary-info {
+            flex: 1;
+        }
+
+        .anniversary-name {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: white;
+        }
+
+        .anniversary-years {
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .send-wish-btn {
+            padding: 12px 32px;
+            background: white;
+            color: #00796B;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.2s;
+        }
+
+        .send-wish-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .auto-send-options {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        .auto-send-btn {
+            padding: 10px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+            backdrop-filter: blur(10px);
+        }
+
+        .auto-send-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 40px 32px;
+            border-radius: 16px;
+            border: 1px solid #E5E8EF;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        .stat-card h3 {
+            font-size: 48px;
+            color: #00796B;
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: -1px;
+        }
+
+        .stat-card p {
+            color: #4E5969;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 480px 1fr;
+            gap: 32px;
+            margin-bottom: 48px;
+        }
+
+        .card {
+            background: white;
+            padding: 32px;
+            border-radius: 16px;
+            border: 1px solid #E5E8EF;
+        }
+
+        .card h3 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 28px;
+            color: #1D2129;
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: #1D2129;
+            padding: 0;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #1D2129;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #E5E8EF;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            background: white;
+            color: #1D2129;
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #00796B;
+            box-shadow: 0 0 0 3px rgba(44, 104, 255, 0.1);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 16px 24px;
+            background: #00796B;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: #00695C;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(44, 104, 255, 0.3);
+        }
+
+        .upcoming-list {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .upcoming-item {
+            padding: 16px;
+            border: 1px solid #E5E8EF;
+            background: white;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+        }
+
+        .upcoming-item:hover {
+            border-color: #00796B;
+            box-shadow: 0 2px 8px rgba(44, 104, 255, 0.1);
+        }
+
+        .upcoming-info h4 {
+            color: #1D2129;
+            margin-bottom: 6px;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .upcoming-info p {
+            color: #4E5969;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .days-left {
+            background: #00796B;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-small {
+            padding: 6px 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-small:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-small.active {
+            background: #E0F2F1 !important;
+            color: #00796B !important;
+            border: 1px solid #00796B !important;
+        }
+
+        .btn-edit {
+            background: #FFA940;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #FF9520;
+        }
+
+        .btn-delete {
+            background: #F54B5E;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #E03E52;
+        }
+
+        .btn-copy {
+            background: #00B96B;
+            color: white;
+        }
+
+        .btn-copy:hover {
+            background: #00A35B;
+        }
+
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid #E5E8EF;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 40px;
+            color: #00796B;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .stat-card p {
+            color: #4E5969;
+            font-size: 14px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 32px;
+            border-radius: 16px;
+            max-width: 560px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-header h2 {
+            color: #1D2129;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #86909C;
+            padding: 4px;
+            line-height: 1;
+        }
+
+        .close-btn:hover {
+            color: #1D2129;
+        }
+
+        .wish-template {
+            background: #F7F8FA;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #E5E8EF;
+        }
+
+        .wish-template:hover {
+            background: #F0F2F5;
+            border-color: #00796B;
+        }
+
+        .wish-preview {
+            background: #E0F7FA;
+            color: #1D2129;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            border: 1px solid #B2DFDB;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .modal-actions button {
+            flex: 1;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .modal-actions button:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-generate {
+            background: #00796B;
+            color: white;
+        }
+
+        .btn-generate:hover {
+            background: #00695C;
+        }
+
+        .btn-copy-large {
+            background: #00B96B;
+            color: white;
+        }
+
+        .btn-copy-large:hover {
+            background: #00A35B;
+        }
+
+        .notification {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            background: #00B96B;
+            color: white;
+            padding: 14px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 2000;
+            display: none;
+            animation: slideIn 0.3s ease-out;
+            font-size: 14px;
+        }
+
+        .notification.show {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .toolbar {
+            background: white;
+            padding: 20px 24px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #E5E8EF;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+        }
+
+        .toolbar strong {
+            color: #1D2129;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .toolbar span {
+            color: #4E5969;
+            font-size: 14px;
+            margin-left: 8px;
+        }
+
+        .toolbar-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-toolbar {
+            padding: 9px 20px;
+            background: #00796B;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-toolbar:hover {
+            background: #00695C;
+            transform: translateY(-1px);
+        }
+
+        .settings-panel {
+            background: #F7F8FA;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 1px solid #E5E8EF;
+        }
+
+        .settings-panel h4 {
+            margin-bottom: 16px;
+            color: #1D2129;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .setting-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .setting-item input[type="checkbox"] {
+            margin-right: 10px;
+            width: auto;
+        }
+
+        .setting-item label {
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 28px;
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #4facfe;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3d9ae6;
+        }
+
+        /* 照片预览和显示 */
+        .photo-preview-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .photo-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #4facfe;
+        }
+
+        .employee-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #4facfe;
+            margin-right: 10px;
+        }
+
+        .employee-avatar-large {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .employee-with-photo {
+            display: flex;
+            align-items: center;
+        }
+
+        .remove-photo-btn {
+            padding: 5px 10px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .remove-photo-btn:hover {
+            background: #c82333;
+        }
+
+        /* 理想LOGO样式 */
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .li-logo {
+            width: 40px;
+            height: 40px;
+            background: #00796B;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            letter-spacing: -1px;
+        }
+
+        .header-content {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* 导航菜单 */
+        .nav-menu {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            color: #4E5969;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.2s;
+            background: transparent;
+        }
+
+        .nav-link:hover {
+            background: rgba(0, 121, 107, 0.08);
+            color: #00796B;
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, #00796B 0%, #00695C 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(0, 121, 107, 0.2);
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .nav-menu {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .nav-link {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <div class="logo-container">
+                    <div class="li-logo">Li</div>
+                    <div>
+                        <h1>入职周年祝福提醒系统</h1>
+                    </div>
+                </div>
+
+                <!-- 导航菜单 -->
+                <div class="nav-menu">
+                    <a href="work-anniversary-reminder.html" class="nav-link active">
+                        🏠 员工管理
+                    </a>
+                    <a href="feishu-config.html" class="nav-link">
+                        ⚙️ 飞书配置
+                    </a>
+                    <a href="anniversary-blessing-confirm.html" class="nav-link">
+                        🎉 祝福确认
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="toolbar">
+            <div>
+                <strong>今天是：</strong><span id="currentDate"></span>
+            </div>
+            <div class="toolbar-buttons">
+                <button class="btn-toolbar" onclick="exportData()">📥 导出数据</button>
+                <button class="btn-toolbar" onclick="importData()">📤 导入数据</button>
+                <button class="btn-toolbar" onclick="clearAllData()" style="background: #F54B5E;">🗑️ 清空数据</button>
+                <button class="btn-toolbar" onclick="checkAnniversaries()">🔔 检查提醒</button>
+            </div>
+        </div>
+
+        <div class="stats-cards">
+            <div class="stat-card">
+                <h3 id="totalEmployees">0</h3>
+                <p>员工总数</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="todayAnniversaries">0</h3>
+                <p>今日入职周年</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="upcomingAnniversaries">0</h3>
+                <p>本周入职周年</p>
+            </div>
+        </div>
+
+        <div class="today-anniversaries" id="todayAnniversariesSection" style="display:none;">
+            <h2>今天入职周年的员工</h2>
+            <div class="anniversary-list" id="todayAnniversaryList"></div>
+        </div>
+
+        <div class="main-content">
+            <div class="card">
+                <h3>➕ 添加/编辑员工</h3>
+                <form id="employeeForm" onsubmit="saveEmployee(event)">
+                    <input type="hidden" id="editId">
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="form-group">
+                            <label>姓名 *</label>
+                            <input type="text" id="employeeName" required placeholder="请输入员工姓名">
+                        </div>
+                        <div class="form-group">
+                            <label>工号 *</label>
+                            <input type="text" id="employeeNumber" required placeholder="如：E001">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="form-group">
+                            <label>所在部门 *</label>
+                            <select id="employeeDepartment" required>
+                                <option value="">请选择部门</option>
+                                <option value="智能驾驶">智能驾驶</option>
+                                <option value="智能座舱系统">智能座舱系统</option>
+                                <option value="小米系统">小米系统</option>
+                                <option value="自动驾驶算法">自动驾驶算法</option>
+                                <option value="技术部">技术部</option>
+                                <option value="产品部">产品部</option>
+                                <option value="市场部">市场部</option>
+                                <option value="销售部">销售部</option>
+                                <option value="人事部">人事部</option>
+                                <option value="财务部">财务部</option>
+                                <option value="其他">其他</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>职级 *</label>
+                            <select id="employeeGrade" required>
+                                <option value="">请选择职级</option>
+                                <option value="14">14</option>
+                                <option value="15">15</option>
+                                <option value="16">16</option>
+                                <option value="17">17</option>
+                                <option value="18">18</option>
+                                <option value="19">19</option>
+                                <option value="20">20</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="form-group">
+                            <label>雇佣状态 *</label>
+                            <select id="employeeStatus" required>
+                                <option value="在职">在职</option>
+                                <option value="试用期">试用期</option>
+                                <option value="离职">离职</option>
+                                <option value="实习">实习</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>学历</label>
+                            <select id="employeeEducation">
+                                <option value="">请选择学历</option>
+                                <option value="博士研究生">博士研究生</option>
+                                <option value="硕士研究生">硕士研究生</option>
+                                <option value="本科">本科</option>
+                                <option value="大专">大专</option>
+                                <option value="高中">高中</option>
+                                <option value="其他">其他</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="form-group">
+                            <label>岗位</label>
+                            <input type="text" id="employeePosition" placeholder="如：算法工程师、产品经理">
+                        </div>
+                        <div class="form-group">
+                            <label>飞书User ID</label>
+                            <input type="text" id="employeeFeishuUserId" placeholder="ou_xxxx (用于@人发送祝福)">
+                            <small style="color: #86909C; font-size: 12px;">
+                                选填，填写后发送祝福时会@对应员工
+                                <a href="#" onclick="event.preventDefault(); alert('获取方法：\n1. 飞书管理后台 → 通讯录 → 找到员工\n2. 点击员工详情，复制User ID\n3. 格式：ou_xxxxxxxxxxxx');" style="color: #00796B;">如何获取？</a>
+                            </small>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="form-group">
+                            <label>入职日期 *</label>
+                            <input type="date" id="employeeJoinDate" required>
+                        </div>
+                        <div class="form-group">
+                            <!-- 占位，保持布局对称 -->
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="form-group">
+                            <label>招聘类型 *</label>
+                            <select id="employeeRecruitmentType" required onchange="toggleGraduationYear()">
+                                <option value="">请选择招聘类型</option>
+                                <option value="社会招聘">社会招聘</option>
+                                <option value="校园招聘">校园招聘</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="graduationYearGroup" style="display: none;">
+                            <label>校招届次</label>
+                            <input type="text" id="employeeGraduationYear" placeholder="如：2024届">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="enableReminder" checked>
+                            提前3天提醒
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn-primary" id="submitBtn">添加员工</button>
+                </form>
+
+                <div class="settings-panel">
+                    <h4>⚙️ 提醒设置</h4>
+                    <div class="setting-item">
+                        <input type="checkbox" id="enableNotifications" checked onchange="toggleNotifications()">
+                        <label for="enableNotifications">开启浏览器通知</label>
+                    </div>
+                    <div class="setting-item">
+                        <input type="checkbox" id="autoCheck" checked onchange="toggleAutoCheck()">
+                        <label for="autoCheck">自动检查（每小时）</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>📅 即将到来的入职周年</h3>
+                <div class="upcoming-list" id="upcomingList"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="margin: 0;">👥 所有员工</h3>
+                <div style="display: flex; gap: 12px;">
+                    <button class="btn-small active" id="sortNewest" onclick="sortEmployees('newest')" style="background: #E0F2F1; color: #00796B; border: 1px solid #00796B;">最新入职</button>
+                    <button class="btn-small" id="sortOldest" onclick="sortEmployees('oldest')" style="background: white; color: #4E5969; border: 1px solid #E5E8EF;">最早入职</button>
+                    <button class="btn-small" id="sortName" onclick="sortEmployees('name')" style="background: white; color: #4E5969; border: 1px solid #E5E8EF;">按姓名</button>
+                </div>
+            </div>
+            <div id="employeesList"></div>
+        </div>
+    </div>
+
+    <div class="modal" id="wishModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🎉 入职周年祝福</h2>
+                <button class="close-btn" onclick="closeWishModal()">&times;</button>
+            </div>
+            <div id="recipientInfo" style="margin-bottom: 20px; color: #666;"></div>
+            <div class="wish-preview" id="wishPreview"></div>
+            <h4 style="margin-bottom: 10px;">选择祝福模板：</h4>
+            <div id="wishTemplates"></div>
+            <div class="modal-actions">
+                <button class="btn-generate" onclick="generateRandomWish()">🎲 随机生成</button>
+                <button class="btn-copy-large" onclick="copyWish()">📋 复制祝福语</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // 数据存储
+        let employees = JSON.parse(localStorage.getItem('employees')) || [];
+        let settings = JSON.parse(localStorage.getItem('settings')) || {
+            notificationsEnabled: true,
+            autoCheckEnabled: true
+        };
+        let currentWish = '';
+        let currentEmployee = null;
+        let autoCheckInterval = null;
+        let currentPhotoBase64 = ''; // 存储当前上传的照片
+
+        // 祝福语模板
+        const wishTemplates = [
+            '恭喜{name}入职{years}周年！感谢您一直以来的辛勤付出和卓越贡献。愿未来的日子里，您继续在{department}发光发热，与公司共同成长！',
+            '{name}，恭喜您迎来入职{years}周年纪念日！{years}年的时光见证了您的成长与进步，感谢您对公司的忠诚与奉献。祝您工作顺利，前程似锦！',
+            '亲爱的{name}，祝贺您入职{years}周年！您的专业精神和团队合作精神一直是我们学习的榜样。期待与您共创更多辉煌！',
+            '热烈祝贺{name}入职{years}周年！{years}年来，您用实力证明了自己，用责任诠释了担当。感谢您为{department}的发展做出的贡献！',
+            '{name}，入职{years}周年快乐！时光荏苒，感谢您{years}年来的陪伴与努力。愿您在新的征程中收获更多成就和喜悦！',
+            '祝贺{name}加入公司{years}周年！您的才华和敬业精神让团队更加优秀。祝您事业蒸蒸日上，生活美满幸福！',
+            '{name}，恭喜您迎来入职{years}周年！感谢您{years}年来的坚守与付出。愿您在{department}继续创造精彩，实现更多梦想！',
+            '入职{years}周年纪念日快乐，{name}！您的热情和专业一直激励着我们。期待未来的日子里，我们继续并肩前行，共创辉煌！'
+        ];
+
+        // 初始化
+        function init() {
+            updateCurrentDate();
+            updateStats();
+            renderUpcoming();
+            renderEmployeesList();
+            checkAnniversaries();
+            requestNotificationPermission();
+
+            // 加载设置
+            document.getElementById('enableNotifications').checked = settings.notificationsEnabled;
+            document.getElementById('autoCheck').checked = settings.autoCheckEnabled;
+
+            // 启动自动检查
+            if (settings.autoCheckEnabled) {
+                startAutoCheck();
+            }
+        }
+
+        // 更新当前日期
+        function updateCurrentDate() {
+            const now = new Date();
+            const dateStr = `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日`;
+            document.getElementById('currentDate').textContent = dateStr;
+        }
+
+        // 更新统计数据
+        function updateStats() {
+            document.getElementById('totalEmployees').textContent = employees.length;
+
+            const today = new Date();
+            const todayStr = `${today.getMonth() + 1}-${today.getDate()}`;
+
+            const todayAnniversaries = employees.filter(emp => {
+                const joinDate = new Date(emp.joinDate);
+                const empDateStr = `${joinDate.getMonth() + 1}-${joinDate.getDate()}`;
+                return empDateStr === todayStr;
+            });
+
+            document.getElementById('todayAnniversaries').textContent = todayAnniversaries.length;
+
+            const upcoming = getUpcomingAnniversaries(7);
+            document.getElementById('upcomingAnniversaries').textContent = upcoming.length;
+        }
+
+        // 计算工作年限
+        function calculateYears(joinDate) {
+            const join = new Date(joinDate);
+            const today = new Date();
+            let years = today.getFullYear() - join.getFullYear();
+
+            const monthDiff = today.getMonth() - join.getMonth();
+            const dayDiff = today.getDate() - join.getDate();
+
+            if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+                years--;
+            }
+
+            return years;
+        }
+
+        // 获取即将到来的入职周年
+        function getUpcomingAnniversaries(days) {
+            const today = new Date();
+            const upcoming = [];
+
+            employees.forEach(emp => {
+                if (!emp.reminderEnabled) return;
+
+                const joinDate = new Date(emp.joinDate);
+                const thisYear = today.getFullYear();
+                const anniversaryThisYear = new Date(thisYear, joinDate.getMonth(), joinDate.getDate());
+
+                if (anniversaryThisYear < today) {
+                    anniversaryThisYear.setFullYear(thisYear + 1);
+                }
+
+                const daysUntil = Math.ceil((anniversaryThisYear - today) / (1000 * 60 * 60 * 24));
+
+                if (daysUntil >= 0 && daysUntil <= days) {
+                    const years = calculateYears(emp.joinDate);
+                    upcoming.push({
+                        ...emp,
+                        daysUntil,
+                        years: years + (daysUntil === 0 ? 0 : 1),
+                        nextAnniversary: anniversaryThisYear
+                    });
+                }
+            });
+
+            return upcoming.sort((a, b) => a.daysUntil - b.daysUntil);
+        }
+
+        // 照片预览
+        function previewPhoto(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // 检查文件大小（限制5MB）
+            if (file.size > 5 * 1024 * 1024) {
+                alert('图片文件大小不能超过5MB');
+                event.target.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                currentPhotoBase64 = e.target.result;
+                const preview = document.getElementById('photoPreview');
+                preview.innerHTML = `
+                    <div class="photo-preview-container">
+                        <img src="${currentPhotoBase64}" class="photo-preview" alt="照片预览">
+                        <button type="button" class="remove-photo-btn" onclick="removePhoto()">删除照片</button>
+                    </div>
+                `;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // 删除照片
+        function removePhoto() {
+            currentPhotoBase64 = '';
+            document.getElementById('employeePhoto').value = '';
+            document.getElementById('photoPreview').innerHTML = '';
+        }
+
+        // 切换校招届次显示
+        function toggleGraduationYear() {
+            const recruitmentType = document.getElementById('employeeRecruitmentType').value;
+            const graduationYearGroup = document.getElementById('graduationYearGroup');
+
+            if (recruitmentType === '校园招聘') {
+                graduationYearGroup.style.display = 'block';
+            } else {
+                graduationYearGroup.style.display = 'none';
+                document.getElementById('employeeGraduationYear').value = '';
+            }
+        }
+
+        // 保存员工
+        function saveEmployee(e) {
+            e.preventDefault();
+
+            const id = document.getElementById('editId').value;
+            const employee = {
+                id: id || Date.now().toString(),
+                name: document.getElementById('employeeName').value.trim(),
+                employeeNumber: document.getElementById('employeeNumber').value.trim(),
+                department: document.getElementById('employeeDepartment').value,
+                grade: document.getElementById('employeeGrade').value,
+                status: document.getElementById('employeeStatus').value,
+                education: document.getElementById('employeeEducation').value,
+                position: document.getElementById('employeePosition').value.trim(),
+                feishuUserId: document.getElementById('employeeFeishuUserId').value.trim(),
+                joinDate: document.getElementById('employeeJoinDate').value,
+                recruitmentType: document.getElementById('employeeRecruitmentType').value,
+                graduationYear: document.getElementById('employeeGraduationYear').value.trim(),
+                reminderEnabled: document.getElementById('enableReminder').checked
+            };
+
+            // 验证工号唯一性（编辑时除外）
+            const existingEmployee = employees.find(e => e.employeeNumber === employee.employeeNumber && e.id !== employee.id);
+            if (existingEmployee) {
+                alert(`工号 ${employee.employeeNumber} 已存在，请使用其他工号！`);
+                return;
+            }
+
+            if (id) {
+                const index = employees.findIndex(e => e.id === id);
+                employees[index] = employee;
+            } else {
+                employees.push(employee);
+            }
+
+            localStorage.setItem('employees', JSON.stringify(employees));
+
+            document.getElementById('employeeForm').reset();
+            document.getElementById('editId').value = '';
+            document.getElementById('submitBtn').textContent = '添加员工';
+            document.getElementById('graduationYearGroup').style.display = 'none';
+
+            updateStats();
+            renderUpcoming();
+            renderEmployeesList();
+            showNotification('保存成功！');
+        }
+
+        // 编辑员工
+        function editEmployee(id) {
+            const employee = employees.find(e => e.id === id);
+            if (!employee) return;
+
+            document.getElementById('editId').value = employee.id;
+            document.getElementById('employeeName').value = employee.name;
+            document.getElementById('employeeNumber').value = employee.employeeNumber || '';
+            document.getElementById('employeeDepartment').value = employee.department;
+            document.getElementById('employeeGrade').value = employee.grade || '';
+            document.getElementById('employeeStatus').value = employee.status || '在职';
+            document.getElementById('employeeEducation').value = employee.education || '';
+            document.getElementById('employeePosition').value = employee.position || '';
+            document.getElementById('employeeFeishuUserId').value = employee.feishuUserId || '';
+            document.getElementById('employeeJoinDate').value = employee.joinDate;
+            document.getElementById('employeeRecruitmentType').value = employee.recruitmentType || '';
+            document.getElementById('employeeGraduationYear').value = employee.graduationYear || '';
+            document.getElementById('enableReminder').checked = employee.reminderEnabled;
+            document.getElementById('submitBtn').textContent = '更新员工';
+
+            // 显示/隐藏校招届次
+            if (employee.recruitmentType === '校园招聘') {
+                document.getElementById('graduationYearGroup').style.display = 'block';
+            } else {
+                document.getElementById('graduationYearGroup').style.display = 'none';
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 删除员工
+        function deleteEmployee(id) {
+            if (!confirm('确定要删除这位员工吗？')) return;
+
+            employees = employees.filter(e => e.id !== id);
+            localStorage.setItem('employees', JSON.stringify(employees));
+
+            updateStats();
+            renderUpcoming();
+            renderEmployeesList();
+            showNotification('删除成功！');
+        }
+
+        // 渲染即将到来的列表
+        function renderUpcoming() {
+            const container = document.getElementById('upcomingList');
+            const upcoming = getUpcomingAnniversaries(30);
+
+            if (upcoming.length === 0) {
+                container.innerHTML = '<div class="empty-state">未来30天内没有员工入职周年</div>';
+                return;
+            }
+
+            container.innerHTML = upcoming.map(emp => {
+                const photoHtml = emp.photo
+                    ? `<img src="${emp.photo}" class="employee-avatar" alt="${emp.name}">`
+                    : '';
+
+                return `
+                    <div class="upcoming-item">
+                        <div class="upcoming-info employee-with-photo">
+                            ${photoHtml}
+                            <div>
+                                <h4>${emp.name} · ${emp.department}</h4>
+                                <p>入职日期：${emp.joinDate} · 将满${emp.years}周年</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <div class="days-left">${emp.daysUntil === 0 ? '今天' : emp.daysUntil + '天后'}</div>
+                            <div class="item-actions">
+                                <button class="btn-small btn-copy" onclick="openWishModal('${emp.id}')">祝福</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 当前排序方式
+        let currentSortMode = 'newest'; // newest, oldest, name
+
+        // 排序员工
+        function sortEmployees(mode) {
+            currentSortMode = mode;
+
+            // 更新按钮active状态 - 理想汽车风格
+            const buttons = {
+                'sortNewest': document.getElementById('sortNewest'),
+                'sortOldest': document.getElementById('sortOldest'),
+                'sortName': document.getElementById('sortName')
+            };
+
+            // 重置所有按钮样式
+            Object.values(buttons).forEach(btn => {
+                btn.classList.remove('active');
+                btn.style.background = 'white';
+                btn.style.color = '#4E5969';
+                btn.style.border = '1px solid #E5E8EF';
+            });
+
+            // 设置当前激活按钮样式
+            if (mode === 'newest') {
+                buttons.sortNewest.classList.add('active');
+                buttons.sortNewest.style.background = '#E0F2F1';
+                buttons.sortNewest.style.color = '#00796B';
+                buttons.sortNewest.style.border = '1px solid #00796B';
+            } else if (mode === 'oldest') {
+                buttons.sortOldest.classList.add('active');
+                buttons.sortOldest.style.background = '#E0F2F1';
+                buttons.sortOldest.style.color = '#00796B';
+                buttons.sortOldest.style.border = '1px solid #00796B';
+            } else if (mode === 'name') {
+                buttons.sortName.classList.add('active');
+                buttons.sortName.style.background = '#E0F2F1';
+                buttons.sortName.style.color = '#00796B';
+                buttons.sortName.style.border = '1px solid #00796B';
+            }
+
+            renderEmployeesList();
+        }
+
+        // 渲染员工列表
+        function renderEmployeesList() {
+            const container = document.getElementById('employeesList');
+
+            if (employees.length === 0) {
+                container.innerHTML = '<div class="empty-state">还没有添加任何员工</div>';
+                return;
+            }
+
+            // 根据当前排序模式排序
+            let sorted = [...employees];
+            if (currentSortMode === 'newest') {
+                // 最新入职（日期从晚到早）
+                sorted.sort((a, b) => new Date(b.joinDate) - new Date(a.joinDate));
+            } else if (currentSortMode === 'oldest') {
+                // 最早入职（日期从早到晚，资历从老到新）
+                sorted.sort((a, b) => new Date(a.joinDate) - new Date(b.joinDate));
+            } else if (currentSortMode === 'name') {
+                // 按姓名拼音排序
+                sorted.sort((a, b) => a.name.localeCompare(b.name, 'zh-CN'));
+            }
+
+            container.innerHTML = sorted.map((emp, index) => {
+                const years = calculateYears(emp.joinDate);
+
+                // 雇佣状态徽章 - 理想汽车风格
+                let statusBadge = '';
+                const statusColors = {
+                    '在职': 'background: #E8F7F0; color: #00B96B;',
+                    '试用期': 'background: #FFF7E6; color: #FF9520;',
+                    '离职': 'background: #FFE8E8; color: #F54B5E;',
+                    '实习': 'background: #E0F2F1; color: #00796B;'
+                };
+                statusBadge = `<span style="${statusColors[emp.status] || 'background: #F0F2F5; color: #86909C;'} padding: 4px 12px; border-radius: 6px; font-size: 12px; margin-left: 8px; font-weight: 500;">${emp.status}</span>`;
+
+                // 根据工龄显示不同的徽章 - 理想汽车风格
+                let seniorityBadge = '';
+                if (years >= 5) {
+                    seniorityBadge = '<span style="background: #FFF0F6; color: #F5576C; padding: 4px 12px; border-radius: 6px; font-size: 12px; margin-left: 8px; font-weight: 500;">⭐ 资深</span>';
+                } else if (years >= 3) {
+                    seniorityBadge = '<span style="background: #E0F2F1; color: #00796B; padding: 4px 12px; border-radius: 6px; font-size: 12px; margin-left: 8px; font-weight: 500;">💎 骨干</span>';
+                } else if (years >= 1) {
+                    seniorityBadge = '<span style="background: #E8F7F0; color: #00B96B; padding: 4px 12px; border-radius: 6px; font-size: 12px; margin-left: 8px; font-weight: 500;">🌟 成长</span>';
+                }
+
+                // 招聘类型显示
+                const recruitmentInfo = emp.recruitmentType === '校园招聘' && emp.graduationYear
+                    ? `${emp.recruitmentType}·${emp.graduationYear}`
+                    : (emp.recruitmentType || '');
+
+                return `
+                    <div class="upcoming-item">
+                        <div class="upcoming-info">
+                            <div style="flex: 1;">
+                                <h4>
+                                    ${emp.name}
+                                    ${statusBadge}
+                                    ${seniorityBadge}
+                                </h4>
+                                <p style="margin: 3px 0; color: #4E5969; font-size: 13px;">
+                                    <strong style="color: #1D2129;">工号：</strong>${emp.employeeNumber || 'N/A'} ·
+                                    <strong style="color: #1D2129;">职级：</strong>${emp.grade || 'N/A'} ·
+                                    <strong style="color: #1D2129;">部门：</strong>${emp.department}
+                                </p>
+                                <p style="margin: 3px 0; color: #4E5969; font-size: 13px;">
+                                    <strong style="color: #1D2129;">岗位：</strong>${emp.position || 'N/A'} ·
+                                    <strong style="color: #1D2129;">学历：</strong>${emp.education || 'N/A'} ·
+                                    <strong style="color: #1D2129;">司龄：</strong>${years}年
+                                </p>
+                                <p style="margin: 3px 0; color: #4E5969; font-size: 13px;">
+                                    <strong style="color: #1D2129;">入职：</strong>${emp.joinDate} ·
+                                    ${recruitmentInfo ? `<strong style="color: #1D2129;">类型：</strong>${recruitmentInfo}` : ''}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="item-actions">
+                            <button class="btn-small btn-edit" onclick="editEmployee('${emp.id}')">编辑</button>
+                            <button class="btn-small btn-delete" onclick="deleteEmployee('${emp.id}')">删除</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 检查入职周年
+        function checkAnniversaries() {
+            const today = new Date();
+            const todayStr = `${today.getMonth() + 1}-${today.getDate()}`;
+
+            const todayAnniversaries = employees.filter(emp => {
+                const joinDate = new Date(emp.joinDate);
+                const empDateStr = `${joinDate.getMonth() + 1}-${joinDate.getDate()}`;
+                return empDateStr === todayStr && emp.reminderEnabled;
+            });
+
+            if (todayAnniversaries.length > 0) {
+                const section = document.getElementById('todayAnniversariesSection');
+                const list = document.getElementById('todayAnniversaryList');
+
+                section.style.display = 'block';
+                list.innerHTML = todayAnniversaries.map(emp => {
+                    const years = calculateYears(emp.joinDate);
+                    const photoHtml = emp.photo
+                        ? `<img src="${emp.photo}" class="employee-avatar-large" alt="${emp.name}">`
+                        : '';
+
+                    return `
+                        <div class="anniversary-item">
+                            <div class="anniversary-info employee-with-photo">
+                                ${photoHtml}
+                                <div>
+                                    <div class="anniversary-name">${emp.name}</div>
+                                    <div class="anniversary-years">入职${years}周年 · ${emp.department}</div>
+                                </div>
+                            </div>
+                            <div class="auto-send-options">
+                                <button class="auto-send-btn" onclick="sendViaWeChat('${emp.id}')">📱 企业微信</button>
+                                <button class="auto-send-btn" onclick="sendViaSMS('${emp.id}')">📧 短信</button>
+                                <button class="auto-send-btn" onclick="sendViaEmail('${emp.id}')">✉️ 邮件</button>
+                                <button class="send-wish-btn" onclick="openWishModal('${emp.id}')">✍️ 自定义</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                // 发送浏览器通知
+                todayAnniversaries.forEach(emp => {
+                    const years = calculateYears(emp.joinDate);
+                    showBrowserNotification(
+                        '入职周年提醒',
+                        `今天是${emp.name}入职${years}周年纪念日！`
+                    );
+                });
+            } else {
+                document.getElementById('todayAnniversariesSection').style.display = 'none';
+            }
+
+            updateStats();
+            renderUpcoming();
+        }
+
+        // 打开祝福弹窗
+        function openWishModal(employeeId) {
+            const employee = employees.find(e => e.id === employeeId);
+            if (!employee) return;
+
+            currentEmployee = employee;
+            const years = calculateYears(employee.joinDate) + 1;
+
+            document.getElementById('recipientInfo').innerHTML = `
+                <strong>${employee.name}</strong> · ${employee.department} · 入职${years}周年
+            `;
+
+            generateRandomWish();
+            renderWishTemplates();
+
+            document.getElementById('wishModal').classList.add('show');
+        }
+
+        // 关闭祝福弹窗
+        function closeWishModal() {
+            document.getElementById('wishModal').classList.remove('show');
+        }
+
+        // 生成随机祝福
+        function generateRandomWish() {
+            if (!currentEmployee) return;
+
+            const years = calculateYears(currentEmployee.joinDate) + 1;
+            const template = wishTemplates[Math.floor(Math.random() * wishTemplates.length)];
+
+            currentWish = template
+                .replace(/{name}/g, currentEmployee.name)
+                .replace(/{years}/g, years)
+                .replace(/{department}/g, currentEmployee.department);
+
+            document.getElementById('wishPreview').textContent = currentWish;
+        }
+
+        // 渲染祝福模板
+        function renderWishTemplates() {
+            if (!currentEmployee) return;
+
+            const years = calculateYears(currentEmployee.joinDate) + 1;
+            const container = document.getElementById('wishTemplates');
+
+            container.innerHTML = wishTemplates.map((template, index) => {
+                const wish = template
+                    .replace(/{name}/g, currentEmployee.name)
+                    .replace(/{years}/g, years)
+                    .replace(/{department}/g, currentEmployee.department);
+
+                return `
+                    <div class="wish-template" onclick="selectTemplate(${index})">
+                        ${wish.substring(0, 50)}...
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 选择模板
+        function selectTemplate(index) {
+            if (!currentEmployee) return;
+
+            const years = calculateYears(currentEmployee.joinDate) + 1;
+            const template = wishTemplates[index];
+
+            currentWish = template
+                .replace(/{name}/g, currentEmployee.name)
+                .replace(/{years}/g, years)
+                .replace(/{department}/g, currentEmployee.department);
+
+            document.getElementById('wishPreview').textContent = currentWish;
+        }
+
+        // 复制祝福语
+        function copyWish() {
+            if (!currentWish) return;
+
+            navigator.clipboard.writeText(currentWish).then(() => {
+                showNotification('祝福语已复制到剪贴板！');
+            }).catch(err => {
+                console.error('复制失败：', err);
+                alert('复制失败，请手动复制');
+            });
+        }
+
+        // 通过企业微信发送
+        function sendViaWeChat(employeeId) {
+            const employee = employees.find(e => e.id === employeeId);
+            if (!employee) return;
+
+            const years = calculateYears(employee.joinDate) + 1;
+            const wish = `恭喜${employee.name}入职${years}周年！感谢您的辛勤付出和卓越贡献！`;
+
+            navigator.clipboard.writeText(wish).then(() => {
+                showNotification('祝福语已复制！请打开企业微信发送给员工');
+            });
+        }
+
+        // 通过短信发送
+        function sendViaSMS(employeeId) {
+            const employee = employees.find(e => e.id === employeeId);
+            if (!employee) return;
+
+            const years = calculateYears(employee.joinDate) + 1;
+            const wish = `恭喜${employee.name}入职${years}周年！感谢您的辛勤付出和卓越贡献！`;
+
+            if (employee.contact) {
+                navigator.clipboard.writeText(wish).then(() => {
+                    showNotification(`祝福语已复制！联系方式：${employee.contact}`);
+                });
+            } else {
+                alert('该员工未填写联系方式');
+            }
+        }
+
+        // 通过邮件发送
+        function sendViaEmail(employeeId) {
+            const employee = employees.find(e => e.id === employeeId);
+            if (!employee) return;
+
+            const years = calculateYears(employee.joinDate) + 1;
+            const subject = `恭喜${employee.name}入职${years}周年！`;
+            const body = `恭喜${employee.name}入职${years}周年！感谢您${years}年来的辛勤付出和卓越贡献。愿未来的日子里，您继续在${employee.department}发光发热，与公司共同成长！`;
+
+            navigator.clipboard.writeText(body).then(() => {
+                showNotification('祝福语已复制！请在邮件客户端中粘贴发送');
+            });
+        }
+
+        // 导出数据
+        function exportData() {
+            const dataStr = JSON.stringify(employees, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `员工入职周年数据_${new Date().toLocaleDateString()}.json`;
+            link.click();
+            showNotification('数据已导出！');
+        }
+
+        // 导入数据（支持多种格式）
+        function importData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json,.csv,.txt';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const fileName = file.name.toLowerCase();
+                const reader = new FileReader();
+
+                reader.onload = (event) => {
+                    try {
+                        let importedData = [];
+
+                        if (fileName.endsWith('.json')) {
+                            // JSON格式
+                            importedData = JSON.parse(event.target.result);
+                        } else if (fileName.endsWith('.csv')) {
+                            // CSV格式
+                            importedData = parseCSV(event.target.result);
+                        } else if (fileName.endsWith('.txt')) {
+                            // TXT格式
+                            importedData = parseTXT(event.target.result);
+                        }
+
+                        if (importedData.length === 0) {
+                            alert('文件中没有有效的员工数据！');
+                            return;
+                        }
+
+                        // 合并数据（可选：替换或追加）
+                        if (confirm(`发现 ${importedData.length} 条员工数据。\n\n点击"确定"追加到现有数据\n点击"取消"替换所有数据`)) {
+                            // 追加模式
+                            employees = [...employees, ...importedData];
+                        } else {
+                            // 替换模式
+                            employees = importedData;
+                        }
+
+                        localStorage.setItem('employees', JSON.stringify(employees));
+                        updateStats();
+                        renderUpcoming();
+                        renderEmployeesList();
+                        showNotification(`成功导入 ${importedData.length} 条员工数据！`);
+                    } catch (err) {
+                        console.error('导入错误：', err);
+                        alert('文件格式错误！请检查文件格式。\n\n' + err.message);
+                    }
+                };
+                reader.readAsText(file, 'UTF-8'); // 明确指定UTF-8编码
+            };
+            input.click();
+        }
+
+        // 清空所有数据
+        function clearAllData() {
+            if (!confirm('⚠️ 警告：此操作将删除所有员工数据，且无法恢复！\n\n确定要清空所有数据吗？')) {
+                return;
+            }
+
+            // 二次确认
+            if (!confirm('请再次确认：真的要删除所有员工数据吗？\n\n建议先导出备份！')) {
+                return;
+            }
+
+            // 清空数据
+            employees = [];
+            localStorage.removeItem('employees');
+
+            // 更新界面
+            updateStats();
+            renderUpcoming();
+            renderEmployeesList();
+
+            showNotification('✅ 所有数据已清空！');
+        }
+
+        // 标准化日期格式 (将 2021/7/29 转换为 2021-07-29)
+        function normalizeDate(dateStr) {
+            if (!dateStr) return '';
+
+            // 如果已经是 YYYY-MM-DD 格式，直接返回
+            if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+                return dateStr;
+            }
+
+            // 处理 YYYY/M/D 或 YYYY/MM/DD 格式
+            const date = new Date(dateStr);
+            if (isNaN(date.getTime())) {
+                return dateStr; // 如果无法解析，返回原值
+            }
+
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+
+            return `${year}-${month}-${day}`;
+        }
+
+        // 解析CSV格式
+        function parseCSV(csvText) {
+            const lines = csvText.trim().split('\n');
+            if (lines.length < 2) {
+                throw new Error('CSV文件至少需要包含标题行和数据行');
+            }
+
+            // 第一行是标题
+            const headers = lines[0].split(',').map(h => h.trim());
+            const employees = [];
+
+            // 从第二行开始是数据
+            for (let i = 1; i < lines.length; i++) {
+                const values = parseCSVLine(lines[i]);
+                if (values.length < 4) continue; // 至少需要姓名、工号、部门、职级
+
+                const employee = {
+                    id: Date.now().toString() + i,
+                    name: values[0] || '',
+                    employeeNumber: values[1] || '',
+                    department: values[2] || '',
+                    grade: values[3] || '',
+                    status: values[4] || '在职',
+                    education: values[5] || '',
+                    position: values[6] || '',
+                    joinDate: normalizeDate(values[7] || ''),
+                    recruitmentType: values[8] || '',
+                    graduationYear: values[9] || '',
+                    reminderEnabled: values[10] !== 'false' && values[10] !== '否'
+                };
+
+                // 验证必填字段
+                if (employee.name && employee.employeeNumber && employee.department && employee.grade && employee.joinDate) {
+                    employees.push(employee);
+                }
+            }
+
+            return employees;
+        }
+
+        // 解析CSV行（处理引号中的逗号）
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current.trim());
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+
+            result.push(current.trim());
+            return result;
+        }
+
+        // 解析TXT格式
+        function parseTXT(txtText) {
+            const lines = txtText.trim().split('\n');
+            const employees = [];
+
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line || line.startsWith('#')) continue; // 跳过空行和注释
+
+                // 支持多种分隔符：制表符、竖线、分号
+                const parts = line.split(/[\t|;]/).map(p => p.trim());
+                if (parts.length < 4) continue; // 至少需要姓名、工号、部门、职级
+
+                const employee = {
+                    id: Date.now().toString() + i,
+                    name: parts[0] || '',
+                    employeeNumber: parts[1] || '',
+                    department: parts[2] || '',
+                    grade: parts[3] || '',
+                    status: parts[4] || '在职',
+                    education: parts[5] || '',
+                    position: parts[6] || '',
+                    joinDate: normalizeDate(parts[7] || ''),
+                    recruitmentType: parts[8] || '',
+                    graduationYear: parts[9] || '',
+                    reminderEnabled: parts[10] !== 'false' && parts[10] !== '否'
+                };
+
+                // 验证必填字段
+                if (employee.name && employee.employeeNumber && employee.department && employee.grade && employee.joinDate) {
+                    employees.push(employee);
+                }
+            }
+
+            return employees;
+        }
+
+        // 显示通知
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // 浏览器通知
+        function requestNotificationPermission() {
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission();
+            }
+        }
+
+        function showBrowserNotification(title, body) {
+            if (!settings.notificationsEnabled) return;
+
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification(title, {
+                    body: body,
+                    icon: '🎉',
+                    tag: 'anniversary-' + Date.now()
+                });
+            }
+        }
+
+        // 切换通知
+        function toggleNotifications() {
+            settings.notificationsEnabled = document.getElementById('enableNotifications').checked;
+            localStorage.setItem('settings', JSON.stringify(settings));
+
+            if (settings.notificationsEnabled && Notification.permission === 'default') {
+                Notification.requestPermission();
+            }
+        }
+
+        // 切换自动检查
+        function toggleAutoCheck() {
+            settings.autoCheckEnabled = document.getElementById('autoCheck').checked;
+            localStorage.setItem('settings', JSON.stringify(settings));
+
+            if (settings.autoCheckEnabled) {
+                startAutoCheck();
+            } else {
+                stopAutoCheck();
+            }
+        }
+
+        // 启动自动检查
+        function startAutoCheck() {
+            if (autoCheckInterval) return;
+
+            autoCheckInterval = setInterval(() => {
+                checkAnniversaries();
+            }, 60 * 60 * 1000); // 每小时检查一次
+        }
+
+        // 停止自动检查
+        function stopAutoCheck() {
+            if (autoCheckInterval) {
+                clearInterval(autoCheckInterval);
+                autoCheckInterval = null;
+            }
+        }
+
+        // 页面加载时初始化
+        window.addEventListener('DOMContentLoaded', init);
+
+        // 页面可见时检查
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                checkAnniversaries();
+            }
+        });
+    </script>
+</body>
+</html>
