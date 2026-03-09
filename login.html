@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>入职周年祝福提醒系统 - 登录</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #00796B 0%, #004D40 50%, #00251A 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 动态背景装饰 */
+        .bg-decoration {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .bg-decoration-1 {
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+            top: -200px;
+            right: -200px;
+            animation-delay: 0s;
+        }
+
+        .bg-decoration-2 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+            bottom: -100px;
+            left: -100px;
+            animation-delay: 5s;
+        }
+
+        .bg-decoration-3 {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+            top: 50%;
+            left: 10%;
+            animation-delay: 10s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+            }
+            50% {
+                transform: translateY(-30px) scale(1.1);
+            }
+        }
+
+        /* 主容器 */
+        .login-container {
+            position: relative;
+            z-index: 10;
+            width: 90%;
+            max-width: 1200px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        /* 左侧品牌区域 */
+        .brand-section {
+            color: white;
+            padding: 40px;
+        }
+
+        .li-logo {
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: 700;
+            color: white;
+            letter-spacing: -2px;
+            margin-bottom: 48px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .brand-title {
+            font-size: 56px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 24px;
+            letter-spacing: -1px;
+        }
+
+        .brand-subtitle {
+            font-size: 24px;
+            opacity: 0.9;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            font-weight: 400;
+        }
+
+        .brand-features {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 16px;
+            opacity: 0.85;
+        }
+
+        .feature-icon {
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        /* 右侧登录卡片 */
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 48px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .login-header h2 {
+            font-size: 32px;
+            color: #1D2129;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .login-header p {
+            color: #4E5969;
+            font-size: 15px;
+        }
+
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #1D2129;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #E5E8EF;
+            border-radius: 12px;
+            font-size: 15px;
+            font-family: inherit;
+            background: white;
+            color: #1D2129;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #00796B;
+            box-shadow: 0 0 0 4px rgba(0, 121, 107, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: #86909C;
+        }
+
+        /* 按钮样式 */
+        .btn-login {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #00796B 0%, #00695C 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 12px rgba(0, 121, 107, 0.3);
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 121, 107, 0.4);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        .divider {
+            text-align: center;
+            margin: 32px 0;
+            position: relative;
+            color: #86909C;
+            font-size: 14px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 40%;
+            height: 1px;
+            background: #E5E8EF;
+        }
+
+        .divider::before {
+            left: 0;
+        }
+
+        .divider::after {
+            right: 0;
+        }
+
+        .btn-google {
+            width: 100%;
+            padding: 16px;
+            background: white;
+            color: #1D2129;
+            border: 2px solid #E5E8EF;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .btn-google:hover {
+            border-color: #00796B;
+            background: #F7F8FA;
+        }
+
+        .google-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 24px;
+            color: #4E5969;
+            font-size: 14px;
+        }
+
+        .register-link a {
+            color: #00796B;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .register-link a:hover {
+            color: #00695C;
+            text-decoration: underline;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 968px) {
+            .login-container {
+                grid-template-columns: 1fr;
+                gap: 40px;
+                padding: 40px 20px;
+            }
+
+            .brand-section {
+                text-align: center;
+                padding: 0;
+            }
+
+            .li-logo {
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .brand-features {
+                align-items: center;
+            }
+
+            .brand-title {
+                font-size: 40px;
+            }
+
+            .brand-subtitle {
+                font-size: 18px;
+            }
+
+            .login-card {
+                padding: 32px;
+            }
+        }
+
+        /* 加载动画 */
+        .loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loading.show {
+            display: flex;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景装饰 -->
+    <div class="bg-decoration bg-decoration-1"></div>
+    <div class="bg-decoration bg-decoration-2"></div>
+    <div class="bg-decoration bg-decoration-3"></div>
+
+    <!-- 主容器 -->
+    <div class="login-container">
+        <!-- 左侧品牌区域 -->
+        <div class="brand-section">
+            <div class="li-logo">Li</div>
+            <h1 class="brand-title">入职周年<br>祝福提醒系统</h1>
+            <p class="brand-subtitle">让每一个重要时刻都被记住</p>
+
+            <div class="brand-features">
+                <div class="feature-item">
+                    <div class="feature-icon">🎂</div>
+                    <span>自动周年提醒，不错过任何庆祝时刻</span>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">👥</div>
+                    <span>多人协作管理，团队数据实时同步</span>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🔐</div>
+                    <span>企业级安全保障，数据隔离保护</span>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">☁️</div>
+                    <span>云端存储备份，随时随地访问</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧登录卡片 -->
+        <div class="login-card">
+            <div class="login-header">
+                <h2>欢迎回来</h2>
+                <p>登录您的账号开始使用</p>
+            </div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">邮箱地址</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="请输入您的邮箱地址"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password">密码</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="请输入您的密码"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="btn-login">登录</button>
+            </form>
+
+            <div class="divider">或</div>
+
+            <button class="btn-google" id="googleSignIn">
+                <svg class="google-icon" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
+                使用 Google 账号登录
+            </button>
+
+            <div class="register-link">
+                还没有账号？<a href="#" id="showRegister">立即注册</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 加载动画 -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+    </div>
+
+    <script>
+        // 登录表单处理
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // 显示加载动画
+            document.getElementById('loading').classList.add('show');
+
+            // 这里添加Firebase认证逻辑
+            console.log('登录:', email);
+
+            // 模拟登录延迟（实际使用时替换为Firebase认证）
+            setTimeout(() => {
+                document.getElementById('loading').classList.remove('show');
+                // 登录成功后跳转到主页面
+                // window.location.href = 'index.html';
+                alert('登录功能将在Firebase集成后启用');
+            }, 1500);
+        });
+
+        // Google登录
+        document.getElementById('googleSignIn').addEventListener('click', function() {
+            document.getElementById('loading').classList.add('show');
+
+            // 这里添加Google OAuth登录逻辑
+            console.log('Google登录');
+
+            setTimeout(() => {
+                document.getElementById('loading').classList.remove('show');
+                alert('Google登录功能将在Firebase集成后启用');
+            }, 1500);
+        });
+
+        // 显示注册页面
+        document.getElementById('showRegister').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('注册功能开发中...');
+            // 实际使用时跳转到注册页面或显示注册模态框
+        });
+    </script>
+</body>
+</html>

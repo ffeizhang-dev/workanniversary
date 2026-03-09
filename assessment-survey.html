@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>整车电动管理者角色评分</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: #F7F8FA;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* 页眉 */
+        .header {
+            background: linear-gradient(135deg, #00796B 0%, #00695C 100%);
+            padding: 48px;
+            border-radius: 20px 20px 0 0;
+            color: white;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 121, 107, 0.2);
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.95;
+            line-height: 1.6;
+        }
+
+        .anonymous-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            margin-top: 16px;
+            font-size: 14px;
+            font-weight: 600;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .anonymous-notice {
+            background: #E0F2F1;
+            padding: 24px 40px;
+            border-bottom: 2px solid #B2DFDB;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .notice-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #00796B, #00695C);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .notice-content {
+            flex: 1;
+        }
+
+        .notice-content h3 {
+            font-size: 16px;
+            color: #00796B;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .notice-content p {
+            font-size: 14px;
+            color: #4E5969;
+            line-height: 1.6;
+        }
+
+        /* 主内容卡片 */
+        .card {
+            background: white;
+            padding: 0;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        /* 基本信息 */
+        .basic-info {
+            padding: 40px;
+            border-bottom: 2px solid #E5E8EF;
+        }
+
+        .basic-info h2 {
+            font-size: 20px;
+            color: #1D2129;
+            margin-bottom: 24px;
+            font-weight: 600;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 0;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #1D2129;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #E5E8EF;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #00796B;
+            box-shadow: 0 0 0 3px rgba(0, 121, 107, 0.1);
+        }
+
+        /* 评分说明 */
+        .score-legend {
+            background: #E0F2F1;
+            padding: 32px 40px;
+            border-bottom: 2px solid #E5E8EF;
+        }
+
+        .score-legend h3 {
+            font-size: 18px;
+            color: #00796B;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #B2DFDB;
+        }
+
+        .legend-score {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #00796B, #00695C);
+            color: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .legend-text {
+            font-size: 14px;
+            color: #1D2129;
+            font-weight: 500;
+        }
+
+        /* 评估项目 */
+        .assessment-section {
+            padding: 40px;
+            border-bottom: 2px solid #E5E8EF;
+        }
+
+        .assessment-section:last-of-type {
+            border-bottom: none;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 28px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #E5E8EF;
+        }
+
+        .section-number {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #00796B, #00695C);
+            color: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .section-title {
+            flex: 1;
+        }
+
+        .section-title h3 {
+            font-size: 20px;
+            color: #1D2129;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .section-title p {
+            font-size: 14px;
+            color: #4E5969;
+        }
+
+        .section-score {
+            font-size: 32px;
+            font-weight: 700;
+            color: #00796B;
+            min-width: 80px;
+            text-align: right;
+        }
+
+        .section-score .total {
+            font-size: 16px;
+            color: #86909C;
+            font-weight: 500;
+        }
+
+        /* 评分选项 */
+        .score-options {
+            display: flex;
+            gap: 12px;
+            justify-content: space-between;
+        }
+
+        .score-option {
+            flex: 1;
+            position: relative;
+        }
+
+        .score-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .score-option label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 12px;
+            background: #F7F8FA;
+            border: 2px solid #E5E8EF;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .score-option label:hover {
+            background: #E0F2F1;
+            border-color: #B2DFDB;
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(0, 121, 107, 0.15);
+        }
+
+        .score-option input[type="radio"]:checked + label {
+            background: linear-gradient(135deg, #00796B, #00695C);
+            border-color: #00796B;
+            color: white;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 121, 107, 0.3);
+        }
+
+        .score-value {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .score-label {
+            font-size: 12px;
+            line-height: 1.4;
+            font-weight: 500;
+        }
+
+        .score-option input[type="radio"]:checked + label .score-value,
+        .score-option input[type="radio"]:checked + label .score-label {
+            color: white;
+        }
+
+        /* 总分区域 */
+        .total-section {
+            background: linear-gradient(135deg, #E0F2F1 0%, #B2DFDB 100%);
+            padding: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .total-info h2 {
+            font-size: 24px;
+            color: #1D2129;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .total-info p {
+            font-size: 14px;
+            color: #4E5969;
+        }
+
+        .total-score {
+            text-align: right;
+        }
+
+        .total-score .score {
+            font-size: 56px;
+            font-weight: 700;
+            color: #00796B;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .total-score .max {
+            font-size: 18px;
+            color: #4E5969;
+            font-weight: 500;
+        }
+
+        .total-score .rating {
+            margin-top: 12px;
+            padding: 8px 20px;
+            background: white;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .rating.excellent { color: #00B96B; }
+        .rating.good { color: #00796B; }
+        .rating.average { color: #FF9520; }
+        .rating.poor { color: #F54B5E; }
+
+        /* 按钮组 */
+        .button-group {
+            padding: 32px 40px;
+            display: flex;
+            gap: 16px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 16px 32px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00796B, #00695C);
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 121, 107, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 121, 107, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #00796B;
+            border: 2px solid #00796B;
+        }
+
+        .btn-secondary:hover {
+            background: #E0F2F1;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* 提示信息 */
+        .alert {
+            margin: 20px 40px;
+            padding: 16px 20px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-warning {
+            background: #FFF7E8;
+            color: #FF9520;
+            border-left: 4px solid #FF9520;
+        }
+
+        .alert-success {
+            background: #E8F7F0;
+            color: #00B96B;
+            border-left: 4px solid #00B96B;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .header {
+                padding: 32px 24px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .basic-info,
+            .score-legend,
+            .assessment-section,
+            .button-group {
+                padding: 24px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .legend-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .score-options {
+                flex-wrap: wrap;
+            }
+
+            .score-option {
+                min-width: calc(50% - 6px);
+            }
+
+            .total-section {
+                flex-direction: column;
+                gap: 24px;
+                text-align: center;
+            }
+
+            .total-score {
+                text-align: center;
+            }
+        }
+
+        /* 打印样式 */
+        @media print {
+            body {
+                background: white;
+            }
+
+            .button-group {
+                display: none;
+            }
+
+            .card {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 页眉 -->
+        <div class="header">
+            <h1>📊 整车电动管理者角色评分</h1>
+            <p>请根据被评估人在各维度的实际表现进行客观评分</p>
+            <div class="anonymous-badge">
+                🔒 本问卷完全匿名，请放心填写
+            </div>
+        </div>
+
+        <!-- 主内容 -->
+        <div class="card">
+            <!-- 匿名说明 -->
+            <div class="anonymous-notice">
+                <div class="notice-icon">🔐</div>
+                <div class="notice-content">
+                    <h3>匿名评估保护</h3>
+                    <p>您的评估将完全匿名提交，系统不会记录任何可识别您身份的信息。请客观真实地填写评估内容，您的反馈对我们非常重要。</p>
+                </div>
+            </div>
+
+            <!-- 基本信息 -->
+            <div class="basic-info">
+                <h2>被评估人信息</h2>
+                <div class="info-grid">
+                    <div class="form-group">
+                        <label>被评估人姓名 *</label>
+                        <input type="text" id="employeeName" placeholder="请输入被评估人姓名" required>
+                    </div>
+                    <div class="form-group">
+                        <label>部门 *</label>
+                        <input type="text" id="department" placeholder="请输入被评估人所属部门" required>
+                    </div>
+                    <div class="form-group">
+                        <label>职位</label>
+                        <input type="text" id="position" placeholder="请输入被评估人职位">
+                    </div>
+                    <div class="form-group">
+                        <label>评估编号（自动生成）</label>
+                        <input type="text" id="assessmentId" readonly style="background: #F7F8FA; color: #86909C;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 评分说明 -->
+            <div class="score-legend">
+                <h3>💡 评分标准说明</h3>
+                <div class="legend-grid">
+                    <div class="legend-item">
+                        <div class="legend-score">0</div>
+                        <div class="legend-text">从未展现</div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-score">1</div>
+                        <div class="legend-text">偶尔展现</div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-score">2</div>
+                        <div class="legend-text">经常展现</div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-score">3</div>
+                        <div class="legend-text">表现优秀</div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-score">4</div>
+                        <div class="legend-text">超出预期</div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-score">5</div>
+                        <div class="legend-text">远超预期，卓越非凡</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 评估维度1 -->
+            <div class="assessment-section">
+                <div class="section-header">
+                    <div class="section-number">1</div>
+                    <div class="section-title">
+                        <h3>战略目标的承接者</h3>
+                        <p>能够理解和承接公司战略目标，将其转化为部门和个人的行动计划</p>
+                    </div>
+                    <div class="section-score">
+                        <span id="score1">-</span><span class="total">/5</span>
+                    </div>
+                </div>
+                <div class="score-options">
+                    <div class="score-option">
+                        <input type="radio" name="dimension1" id="d1-0" value="0">
+                        <label for="d1-0">
+                            <div class="score-value">0</div>
+                            <div class="score-label">从未<br>展现</div>
+                        </label>
+                    </div>
+                    <div class="score-option">
+                        <input type="radio" name="dimension1" id="d1-1" value="1">
+                        <label for="d1-1">
+                            <div class="score-value">1</div>
+                            <div class="score-label">偶尔<br>展现</div>
+                        </label>
+                    </div>
+                    <div class="score-option">
+                        <input type="radio" name="dimension1" id="d1-2" value="2">
+                        <label for="d1-2">
+                            <div class="score-value">2</div>
+                            <div class="score-label">经常<br>展现</div>
+                        </label>
+                    </div>
+                    <div class="score-option">
+                        <input type="radio" name="dimension1" id="d1-3" value="3">
+                        <label for="d1-3">
+                            <div class="score-value">3</div>
+                            <div class="score-label">表现<br>优秀</div>
+                        </label>
+                    </div>
+                    <div class="score-option">
+                        <input type="radio" name="dimension1" id="d1-4" value="4">
+                        <label for="d1-4">
+                            <div class="score-value">4</div>
+                            <div class="score-label">超出<br>预期</div>
+                        </label>
+                    </div>
+                    <div class="score-option">
+                        <input type="radio" name="dimension1" id="d1-5" value="5">
+                        <label for="d1-5">
+                            <div class="score-value">5</div>
+                            <div class="score-label">卓越<br>非凡</div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 评估维度2 -->
+            <div class="assessment-section">
+                <div class="section-header">
+                    <div class="section-number">2</div>
+                    <div class="section-title">
+                        <h3>经营的责任者</h3>
+                        <p>对业务结果负责，具备经营意识和成本意识，持续优化业务效率</p>
+                    </div>
+                    <div class="section-score">
+                        <span id="score2">-</span><span class="total">/5</span>
+                    </div>
+                </div>
+                <div class="score-options">
+                    <div class="score-option">
+                        <input type="radio" name="dimension2" id="d2-0" value="0">
+                        <label for="d2-0">
+                            <div class="score-value">0</div>
+                            <div class="score-label">从未<br>展现</div>
+                        </label>
+                    </div>
+                    <div class="score-option">
+                        <input type="radio" name="dimension2" id="d2-1" value="1">
+                        <label for="d2-1">
+                            <div class="score-value">1</div>
+                            <div class="score-label">偶尔<br>展现</div>
+                        </label>
+                    </div>
+                    <div class="score-option">
+                        <input type="radio" name="dimension2" id="d2-2" value="2">
+                        <label for="d2-2">
+                            <div class="score-value">2</div>
+                            <div class="score-label">经常<br>展现</div>
+                        </label>
+                    </div>
+                    <div class="score-option">
+                        <input type="radio" name="dimension2" id="d2-3" value="3">
+                        <label for="d2-3">
+                            <div class="score-value">3</div>
+                            <div class="score-label">表现<br>优秀</div>
+                        </label>
+                    </div>
+                    <div class="score-option">
+                        <input type="radio" name="dimension2" id="d2-4" value="4">
+                        <label for="d2-4">
+                            <div class="score-value">4</div>
+                            <div class="score-label">超出<br>预期</div>
+                        </label>
+                    </div>
+                    <div class="score-option">
+                        <input type="radio" name="dimension2" id="d2-5" value="5">
+                        <label for="d2-5">
+                            <div class="score-value">5</div>
+                            <div class="score-label">卓越<br>非凡</div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 评估维度3 -->
+            <div class="assessment-section">
+                <div class="section-header">
+                    <div class="section-number">3</div>
+                    <div class="section-title">
+                        <h3>产品交付的责任者</h3>
+                        <p>确保产品按时按质交付，关注用户体验和产品质量</p>
+                    </div>
+                    <div class="section-score">
+                        <span id="score3">-</span><span class="total">/5</span>
+                    </div>
+                </div>
+                <div class="score-options">
+                    <div class="score-option">
+                        <input type="radio" name="dimension3" id="d3-0" value="0">
+                        <label for="d3-0">
+                            <div class="score-value">0</div>
+                            <div class="score-label">从未<br>展现</div>
+                        </label>
+                    </div>
+                    <div class="score-option">
+                        <input type="radio" name="dimension3" id="d3-1" value="1">
+                        <label for="d3-1">
+                            <div class="score-value">1</div>
+                            <div class="score-label">偶尔<br>展现</div>
+                        </label>
+                    </div>
+                    <div class="score-option">
+                        <input type="radio" name="dimension3" id="d3-2" value="2">
+                        <label for="d3-2">
+                            <div class="score-value">2</div>
+                            <div class="score-label">经常<br>展现</div>
+                        </label>
+                    </div>
+                    <div class="score-option">
+                        <input type="radio" name="dimension3" id="d3-3" value="3">
+                        <label for="d3-3">
+                            <div class="score-value">3</div>
+                            <div class="score-label">表现<br>优秀</div>
+                        </label>
+                    </div>
+                    <div class="score-option">
+                        <input type="radio" name="dimension3" id="d3-4" value="4">
+                        <label for="d3-4">
+                            <div class="score-value">4</div>
+                            <div class="score-label">超出<br>预期</div>
+                        </label>
+                    </div>
+                    <div class="score-option">
+                        <input type="radio" name="dimension3" id="d3-5" value="5">
+                        <label for="d3-5">
+                            <div class="score-value">5</div>
+                            <div class="score-label">卓越<br>非凡</div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 评估维度4 -->
+            <div class="assessment-section">
+                <div class="section-header">
+                    <div class="section-number">4</div>
+                    <div class="section-title">
+                        <h3>技术创新的引领者</h3>
+                        <p>推动技术创新和技术变革，提升技术能力和团队技术水平</p>
+                    </div>
+                    <div class="section-score">
+                        <span id="score4">-</span><span class="total">/5</span>
+                    </div>
+                </div>
+                <div class="score-options">
+                    <div class="score-option">
+                        <input type="radio" name="dimension4" id="d4-0" value="0">
+                        <label for="d4-0">
+                            <div class="score-value">0</div>
+                            <div class="score-label">从未<br>展现</div>
+                        </label>
+                    </div>
+                    <div class="score-option">
+                        <input type="radio" name="dimension4" id="d4-1" value="1">
+                        <label for="d4-1">
+                            <div class="score-value">1</div>
+                            <div class="score-label">偶尔<br>展现</div>
+                        </label>
+                    </div>
+                    <div class="score-option">
+                        <input type="radio" name="dimension4" id="d4-2" value="2">
+                        <label for="d4-2">
+                            <div class="score-value">2</div>
+                            <div class="score-label">经常<br>展现</div>
+                        </label>
+                    </div>
+                    <div class="score-option">
+                        <input type="radio" name="dimension4" id="d4-3" value="3">
+                        <label for="d4-3">
+                            <div class="score-value">3</div>
+                            <div class="score-label">表现<br>优秀</div>
+                        </label>
+                    </div>
+                    <div class="score-option">
+                        <input type="radio" name="dimension4" id="d4-4" value="4">
+                        <label for="d4-4">
+                            <div class="score-value">4</div>
+                            <div class="score-label">超出<br>预期</div>
+                        </label>
+                    </div>
+                    <div class="score-option">
+                        <input type="radio" name="dimension4" id="d4-5" value="5">
+                        <label for="d4-5">
+                            <div class="score-value">5</div>
+                            <div class="score-label">卓越<br>非凡</div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 评估维度5 -->
+            <div class="assessment-section">
+                <div class="section-header">
+                    <div class="section-number">5</div>
+                    <div class="section-title">
+                        <h3>组织的领导者</h3>
+                        <p>激励和培养团队成员，建设高效团队，营造积极的团队文化</p>
+                    </div>
+                    <div class="section-score">
+                        <span id="score5">-</span><span class="total">/5</span>
+                    </div>
+                </div>
+                <div class="score-options">
+                    <div class="score-option">
+                        <input type="radio" name="dimension5" id="d5-0" value="0">
+                        <label for="d5-0">
+                            <div class="score-value">0</div>
+                            <div class="score-label">从未<br>展现</div>
+                        </label>
+                    </div>
+                    <div class="score-option">
+                        <input type="radio" name="dimension5" id="d5-1" value="1">
+                        <label for="d5-1">
+                            <div class="score-value">1</div>
+                            <div class="score-label">偶尔<br>展现</div>
+                        </label>
+                    </div>
+                    <div class="score-option">
+                        <input type="radio" name="dimension5" id="d5-2" value="2">
+                        <label for="d5-2">
+                            <div class="score-value">2</div>
+                            <div class="score-label">经常<br>展现</div>
+                        </label>
+                    </div>
+                    <div class="score-option">
+                        <input type="radio" name="dimension5" id="d5-3" value="3">
+                        <label for="d5-3">
+                            <div class="score-value">3</div>
+                            <div class="score-label">表现<br>优秀</div>
+                        </label>
+                    </div>
+                    <div class="score-option">
+                        <input type="radio" name="dimension5" id="d5-4" value="4">
+                        <label for="d5-4">
+                            <div class="score-value">4</div>
+                            <div class="score-label">超出<br>预期</div>
+                        </label>
+                    </div>
+                    <div class="score-option">
+                        <input type="radio" name="dimension5" id="d5-5" value="5">
+                        <label for="d5-5">
+                            <div class="score-value">5</div>
+                            <div class="score-label">卓越<br>非凡</div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 评估维度6 -->
+            <div class="assessment-section">
+                <div class="section-header">
+                    <div class="section-number">6</div>
+                    <div class="section-title">
+                        <h3>跨部门协作的统筹者</h3>
+                        <p>推动跨部门协作，整合资源，协调各方利益，达成共同目标</p>
+                    </div>
+                    <div class="section-score">
+                        <span id="score6">-</span><span class="total">/5</span>
+                    </div>
+                </div>
+                <div class="score-options">
+                    <div class="score-option">
+                        <input type="radio" name="dimension6" id="d6-0" value="0">
+                        <label for="d6-0">
+                            <div class="score-value">0</div>
+                            <div class="score-label">从未<br>展现</div>
+                        </label>
+                    </div>
+                    <div class="score-option">
+                        <input type="radio" name="dimension6" id="d6-1" value="1">
+                        <label for="d6-1">
+                            <div class="score-value">1</div>
+                            <div class="score-label">偶尔<br>展现</div>
+                        </label>
+                    </div>
+                    <div class="score-option">
+                        <input type="radio" name="dimension6" id="d6-2" value="2">
+                        <label for="d6-2">
+                            <div class="score-value">2</div>
+                            <div class="score-label">经常<br>展现</div>
+                        </label>
+                    </div>
+                    <div class="score-option">
+                        <input type="radio" name="dimension6" id="d6-3" value="3">
+                        <label for="d6-3">
+                            <div class="score-value">3</div>
+                            <div class="score-label">表现<br>优秀</div>
+                        </label>
+                    </div>
+                    <div class="score-option">
+                        <input type="radio" name="dimension6" id="d6-4" value="4">
+                        <label for="d6-4">
+                            <div class="score-value">4</div>
+                            <div class="score-label">超出<br>预期</div>
+                        </label>
+                    </div>
+                    <div class="score-option">
+                        <input type="radio" name="dimension6" id="d6-5" value="5">
+                        <label for="d6-5">
+                            <div class="score-value">5</div>
+                            <div class="score-label">卓越<br>非凡</div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 总分区域 -->
+            <div class="total-section">
+                <div class="total-info">
+                    <h2>📊 综合评估得分</h2>
+                    <p>基于6个维度的综合评估结果</p>
+                </div>
+                <div class="total-score">
+                    <div class="score" id="totalScore">0</div>
+                    <div class="max">满分 30 分</div>
+                    <div class="rating" id="ratingLabel"></div>
+                </div>
+            </div>
+
+            <!-- 提示信息 -->
+            <div class="alert alert-warning" id="alertWarning">
+                ⚠️ 请完成所有维度的评分后再提交
+            </div>
+
+            <div class="alert alert-success" id="alertSuccess">
+                ✅ 评估已成功保存！
+            </div>
+
+            <!-- 按钮组 -->
+            <div class="button-group">
+                <button class="btn btn-secondary" onclick="resetForm()">🔄 重置</button>
+                <button class="btn btn-secondary" onclick="exportToPDF()">📥 导出PDF</button>
+                <button class="btn btn-secondary" onclick="exportMyData()">💾 导出我的数据</button>
+                <button class="btn btn-secondary" onclick="openAutoSubmitConfig()">⚙️ 自动回传设置</button>
+                <button class="btn btn-primary" onclick="submitForm()">✅ 提交评估</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 从URL参数自动配置回传设置
+        function loadConfigFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+
+            // 检查是否有autoSubmit参数
+            const autoSubmitMode = urlParams.get('autoSubmit');
+
+            if (autoSubmitMode) {
+                const config = { mode: autoSubmitMode };
+
+                if (autoSubmitMode === 'feishu') {
+                    const webhook = urlParams.get('webhook');
+                    if (webhook) {
+                        config.feishuWebhook = decodeURIComponent(webhook);
+                        console.log('✅ 已从URL加载飞书机器人配置');
+                    }
+                } else if (autoSubmitMode === 'webhook') {
+                    const webhook = urlParams.get('webhook');
+                    if (webhook) {
+                        config.webhookUrl = decodeURIComponent(webhook);
+                        console.log('✅ 已从URL加载Webhook配置');
+                    }
+                } else if (autoSubmitMode === 'email') {
+                    const email = urlParams.get('email');
+                    const subject = urlParams.get('subject');
+                    if (email) {
+                        config.receiverEmail = decodeURIComponent(email);
+                        config.emailSubject = subject ? decodeURIComponent(subject) : '新的匿名评估提交';
+                        console.log('✅ 已从URL加载邮件配置');
+                    }
+                }
+
+                // 保存到localStorage
+                localStorage.setItem('autoSubmitConfig', JSON.stringify(config));
+
+                // 显示配置提示
+                setTimeout(() => {
+                    const notice = document.createElement('div');
+                    notice.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        background: linear-gradient(135deg, #00796B, #00695C);
+                        color: white;
+                        padding: 16px 24px;
+                        border-radius: 12px;
+                        box-shadow: 0 4px 20px rgba(0,121,107,0.3);
+                        z-index: 10000;
+                        font-size: 14px;
+                        animation: slideIn 0.3s ease-out;
+                    `;
+                    notice.innerHTML = '✅ 自动回传已配置：评估提交后将自动发送给组织者';
+                    document.body.appendChild(notice);
+
+                    setTimeout(() => {
+                        notice.style.animation = 'slideOut 0.3s ease-out';
+                        setTimeout(() => notice.remove(), 300);
+                    }, 5000);
+                }, 1000);
+            }
+        }
+
+        // 页面加载时执行
+        loadConfigFromURL();
+
+        // 生成匿名评估ID
+        function generateAnonymousId() {
+            const timestamp = Date.now();
+            const random = Math.random().toString(36).substring(2, 8).toUpperCase();
+            return `ANON-${random}-${timestamp.toString(36).toUpperCase()}`;
+        }
+
+        // 设置匿名ID
+        document.getElementById('assessmentId').value = generateAnonymousId();
+
+        // 实时计算分数
+        function updateScores() {
+            let total = 0;
+
+            for (let i = 1; i <= 6; i++) {
+                const selected = document.querySelector(`input[name="dimension${i}"]:checked`);
+                const score = selected ? parseInt(selected.value) : null;
+
+                // 更新各维度分数显示
+                document.getElementById(`score${i}`).textContent = score !== null ? score : '-';
+
+                if (score !== null) {
+                    total += score;
+                }
+            }
+
+            // 更新总分
+            document.getElementById('totalScore').textContent = total;
+
+            // 更新评级
+            const ratingLabel = document.getElementById('ratingLabel');
+            const percentage = (total / 30) * 100;
+
+            if (percentage >= 85) {
+                ratingLabel.textContent = '卓越非凡';
+                ratingLabel.className = 'rating excellent';
+            } else if (percentage >= 70) {
+                ratingLabel.textContent = '表现优秀';
+                ratingLabel.className = 'rating good';
+            } else if (percentage >= 50) {
+                ratingLabel.textContent = '符合预期';
+                ratingLabel.className = 'rating average';
+            } else {
+                ratingLabel.textContent = '需要改进';
+                ratingLabel.className = 'rating poor';
+            }
+        }
+
+        // 监听所有单选按钮
+        document.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', updateScores);
+        });
+
+        // 验证是否所有维度都已评分
+        function validateForm() {
+            // 检查基本信息
+            const employeeName = document.getElementById('employeeName').value.trim();
+            const department = document.getElementById('department').value.trim();
+
+            if (!employeeName || !department) {
+                showAlert('warning', '⚠️ 请填写被评估人姓名和部门');
+                return false;
+            }
+
+            // 检查所有维度是否已评分
+            for (let i = 1; i <= 6; i++) {
+                const selected = document.querySelector(`input[name="dimension${i}"]:checked`);
+                if (!selected) {
+                    showAlert('warning', '⚠️ 请完成所有维度的评分');
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        // 提交表单
+        async function submitForm() {
+            if (!validateForm()) {
+                return;
+            }
+
+            // 收集数据（匿名评估）
+            const data = {
+                assessmentId: document.getElementById('assessmentId').value,
+                employeeName: document.getElementById('employeeName').value.trim(),
+                department: document.getElementById('department').value.trim(),
+                position: document.getElementById('position').value.trim(),
+                assessmentDate: new Date().toISOString().split('T')[0],
+                isAnonymous: true,
+                scores: {},
+                totalScore: 0
+            };
+
+            let total = 0;
+            for (let i = 1; i <= 6; i++) {
+                const selected = document.querySelector(`input[name="dimension${i}"]:checked`);
+                const score = parseInt(selected.value);
+                data.scores[`dimension${i}`] = score;
+                total += score;
+            }
+            data.totalScore = total;
+
+            // 保存到localStorage（匿名存储，不记录提交者信息）
+            const assessments = JSON.parse(localStorage.getItem('anonymousAssessments') || '[]');
+            assessments.push({
+                ...data,
+                submittedAt: new Date().toISOString()
+            });
+            localStorage.setItem('anonymousAssessments', JSON.stringify(assessments));
+
+            // 尝试自动提交数据
+            const autoSubmitConfig = JSON.parse(localStorage.getItem('autoSubmitConfig') || '{}');
+            if (autoSubmitConfig.mode && autoSubmitConfig.mode !== 'none') {
+                try {
+                    await autoSubmitData({
+                        ...data,
+                        submittedAt: new Date().toISOString()
+                    }, autoSubmitConfig);
+                    showAlert('success', '✅ 匿名评估已成功提交！数据已自动发送给组织者。');
+                } catch (error) {
+                    console.error('Auto-submit failed:', error);
+                    showAlert('success', '✅ 匿名评估已保存！自动发送失败，请稍后使用"导出我的数据"按钮手动提交。');
+                }
+            } else {
+                // 显示成功提示
+                showAlert('success', '✅ 匿名评估已成功提交！感谢您的参与，您的反馈非常重要。');
+            }
+
+            // 3秒后可以选择重置或导出
+            setTimeout(() => {
+                if (confirm('评估已保存！是否重置表单进行下一次评估？')) {
+                    resetForm();
+                }
+            }, 2000);
+        }
+
+        // 自动提交数据
+        async function autoSubmitData(data, config) {
+            if (config.mode === 'feishu') {
+                await submitToFeishu(data, config.feishuWebhook);
+            } else if (config.mode === 'webhook') {
+                await submitToWebhook(data, config.webhookUrl);
+            } else if (config.mode === 'email') {
+                await submitViaEmail(data, config);
+            }
+        }
+
+        // 提交到飞书机器人
+        async function submitToFeishu(data, webhookUrl) {
+            const dimensionNames = [
+                '战略目标的承接者',
+                '经营的责任者',
+                '产品交付的责任者',
+                '技术创新的引领者',
+                '组织的领导者',
+                '跨部门协作的统筹者'
+            ];
+
+            const percentage = (data.totalScore / 30) * 100;
+            let rating = '需要改进';
+            let ratingColor = 'red';
+            if (percentage >= 85) {
+                rating = '卓越非凡';
+                ratingColor = 'green';
+            } else if (percentage >= 70) {
+                rating = '表现优秀';
+                ratingColor = 'turquoise';
+            } else if (percentage >= 50) {
+                rating = '符合预期';
+                ratingColor = 'blue';
+            }
+
+            const card = {
+                msg_type: 'interactive',
+                card: {
+                    header: {
+                        title: {
+                            content: `📊 收到新的匿名评估`,
+                            tag: 'plain_text'
+                        },
+                        template: ratingColor
+                    },
+                    elements: [
+                        {
+                            tag: 'div',
+                            text: {
+                                content: `**被评估人**: ${data.employeeName}\n**部门**: ${data.department}\n**职位**: ${data.position || '未填写'}\n**评估编号**: \`${data.assessmentId}\`\n**提交时间**: ${new Date(data.submittedAt).toLocaleString('zh-CN')}`,
+                                tag: 'lark_md'
+                            }
+                        },
+                        {
+                            tag: 'hr'
+                        },
+                        {
+                            tag: 'div',
+                            text: {
+                                content: `**📈 评分详情**`,
+                                tag: 'lark_md'
+                            }
+                        },
+                        {
+                            tag: 'div',
+                            text: {
+                                content: dimensionNames.map((name, index) =>
+                                    `${name}: **${data.scores[`dimension${index + 1}`]}** 分`
+                                ).join('\n'),
+                                tag: 'lark_md'
+                            }
+                        },
+                        {
+                            tag: 'hr'
+                        },
+                        {
+                            tag: 'div',
+                            text: {
+                                content: `**总分**: ${data.totalScore}/30 分 (${percentage.toFixed(1)}%)\n**评级**: ${rating}`,
+                                tag: 'lark_md'
+                            }
+                        }
+                    ]
+                }
+            };
+
+            const response = await fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(card)
+            });
+
+            const result = await response.json();
+            if (result.code !== 0) {
+                throw new Error(`飞书发送失败: ${result.msg}`);
+            }
+        }
+
+        // 提交到自定义Webhook
+        async function submitToWebhook(data, webhookUrl) {
+            const response = await fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    type: 'anonymous_assessment',
+                    data: data,
+                    timestamp: new Date().toISOString()
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`Webhook请求失败: ${response.statusText}`);
+            }
+        }
+
+        // 通过邮件发送（使用mailto协议）
+        async function submitViaEmail(data, config) {
+            const subject = encodeURIComponent(config.emailSubject || '新的匿名评估提交');
+            const body = encodeURIComponent(`
+被评估人: ${data.employeeName}
+部门: ${data.department}
+职位: ${data.position || '未填写'}
+评估编号: ${data.assessmentId}
+
+评分详情:
+- 战略目标的承接者: ${data.scores.dimension1} 分
+- 经营的责任者: ${data.scores.dimension2} 分
+- 产品交付的责任者: ${data.scores.dimension3} 分
+- 技术创新的引领者: ${data.scores.dimension4} 分
+- 组织的领导者: ${data.scores.dimension5} 分
+- 跨部门协作的统筹者: ${data.scores.dimension6} 分
+
+总分: ${data.totalScore}/30 分
+提交时间: ${new Date(data.submittedAt).toLocaleString('zh-CN')}
+            `);
+
+            window.open(`mailto:${config.receiverEmail}?subject=${subject}&body=${body}`);
+        }
+
+        // 重置表单
+        function resetForm() {
+            if (confirm('确定要重置所有内容吗？')) {
+                document.getElementById('employeeName').value = '';
+                document.getElementById('department').value = '';
+                document.getElementById('position').value = '';
+
+                // 重新生成匿名ID
+                document.getElementById('assessmentId').value = generateAnonymousId();
+
+                document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                    radio.checked = false;
+                });
+
+                updateScores();
+                hideAlerts();
+            }
+        }
+
+        // 导出为PDF（简化版：打印）
+        function exportToPDF() {
+            if (!validateForm()) {
+                return;
+            }
+
+            window.print();
+        }
+
+        // 导出我的数据（一键导出JSON）
+        function exportMyData() {
+            const data = JSON.parse(localStorage.getItem('anonymousAssessments') || '[]');
+
+            if (data.length === 0) {
+                alert('暂无数据可导出，请先提交至少一份评估');
+                return;
+            }
+
+            const json = JSON.stringify(data, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `我的评估数据_${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+
+            showAlert('success', `✅ 已导出 ${data.length} 条评估数据！请将文件发送给数据收集人。`);
+        }
+
+        // 显示提示
+        function showAlert(type, message) {
+            hideAlerts();
+
+            if (type === 'warning') {
+                const alert = document.getElementById('alertWarning');
+                alert.textContent = message;
+                alert.classList.add('show');
+            } else if (type === 'success') {
+                const alert = document.getElementById('alertSuccess');
+                alert.textContent = message;
+                alert.classList.add('show');
+            }
+
+            // 3秒后自动隐藏
+            setTimeout(hideAlerts, 5000);
+        }
+
+        // 隐藏所有提示
+        function hideAlerts() {
+            document.querySelectorAll('.alert').forEach(alert => {
+                alert.classList.remove('show');
+            });
+        }
+
+        // 打开自动回传配置页面
+        function openAutoSubmitConfig() {
+            window.open('auto-submit-config.html', '_blank');
+        }
+
+        // 初始化
+        updateScores();
+    </script>
+</body>
+</html>

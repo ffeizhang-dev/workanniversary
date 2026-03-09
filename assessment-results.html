@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>匿名评估数据汇总</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: #F7F8FA;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #00796B 0%, #00695C 100%);
+            padding: 48px;
+            border-radius: 20px;
+            color: white;
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 32px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 48px;
+            color: #00796B;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .stat-card p {
+            color: #4E5969;
+            font-size: 15px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 32px;
+        }
+
+        .card-header {
+            padding: 32px 40px;
+            border-bottom: 2px solid #E5E8EF;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-header h2 {
+            font-size: 24px;
+            color: #1D2129;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00796B, #00695C);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 121, 107, 0.3);
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #F7F8FA;
+        }
+
+        th {
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            color: #1D2129;
+            font-size: 14px;
+            border-bottom: 2px solid #E5E8EF;
+        }
+
+        td {
+            padding: 16px;
+            color: #4E5969;
+            font-size: 14px;
+            border-bottom: 1px solid #E5E8EF;
+        }
+
+        tbody tr:hover {
+            background: #F7F8FA;
+        }
+
+        .score-badge {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .score-excellent { background: #E8F7F0; color: #00B96B; }
+        .score-good { background: #E0F2F1; color: #00796B; }
+        .score-average { background: #FFF7E8; color: #FF9520; }
+        .score-poor { background: #FFECE8; color: #F54B5E; }
+
+        .anonymous-id {
+            font-family: 'Courier New', monospace;
+            color: #86909C;
+            font-size: 12px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 40px;
+            color: #86909C;
+        }
+
+        .empty-state svg {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 24px;
+            opacity: 0.3;
+        }
+
+        .empty-state h3 {
+            font-size: 20px;
+            color: #4E5969;
+            margin-bottom: 12px;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 32px;
+        }
+
+        .chart-header {
+            margin-bottom: 32px;
+        }
+
+        .chart-header h3 {
+            font-size: 20px;
+            color: #1D2129;
+            margin-bottom: 8px;
+        }
+
+        .chart-header p {
+            color: #4E5969;
+            font-size: 14px;
+        }
+
+        .dimension-chart {
+            display: grid;
+            gap: 20px;
+        }
+
+        .dimension-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .dimension-name {
+            width: 160px;
+            font-size: 14px;
+            color: #1D2129;
+            font-weight: 500;
+        }
+
+        .dimension-bar-container {
+            flex: 1;
+            height: 32px;
+            background: #F7F8FA;
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .dimension-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #00796B, #00695C);
+            border-radius: 16px;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 12px;
+            color: white;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .dimension-score {
+            min-width: 60px;
+            text-align: right;
+            font-size: 18px;
+            font-weight: 700;
+            color: #00796B;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 匿名评估数据汇总</h1>
+            <p>查看所有匿名评估的统计数据和详细记录</p>
+        </div>
+
+        <!-- 统计卡片 -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3 id="totalCount">0</h3>
+                <p>总评估数</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="avgScore">0.0</h3>
+                <p>平均得分</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="excellentCount">0</h3>
+                <p>卓越评级数</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="participantCount">0</h3>
+                <p>被评估人数</p>
+            </div>
+        </div>
+
+        <!-- 维度平均分图表 -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <h3>各维度平均得分</h3>
+                <p>6个评估维度的平均分数分布</p>
+            </div>
+            <div class="dimension-chart" id="dimensionChart"></div>
+        </div>
+
+        <!-- 评估记录表格 -->
+        <div class="card">
+            <div class="card-header">
+                <h2>评估记录详情</h2>
+                <div>
+                    <button class="btn btn-primary" onclick="exportToCSV()">📥 导出CSV</button>
+                    <button class="btn btn-primary" onclick="clearData()" style="margin-left: 12px; background: #F54B5E;">🗑️ 清空数据</button>
+                </div>
+            </div>
+            <div class="table-container" id="tableContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        const dimensionNames = [
+            '战略目标的承接者',
+            '经营的责任者',
+            '产品交付的责任者',
+            '技术创新的引领者',
+            '组织的领导者',
+            '跨部门协作的统筹者'
+        ];
+
+        // 加载数据
+        function loadData() {
+            const assessments = JSON.parse(localStorage.getItem('anonymousAssessments') || '[]');
+
+            if (assessments.length === 0) {
+                showEmptyState();
+                return;
+            }
+
+            // 计算统计数据
+            updateStats(assessments);
+
+            // 渲染维度图表
+            renderDimensionChart(assessments);
+
+            // 渲染表格
+            renderTable(assessments);
+        }
+
+        // 更新统计卡片
+        function updateStats(assessments) {
+            // 总评估数
+            document.getElementById('totalCount').textContent = assessments.length;
+
+            // 平均得分
+            const avgScore = assessments.reduce((sum, a) => sum + a.totalScore, 0) / assessments.length;
+            document.getElementById('avgScore').textContent = avgScore.toFixed(1);
+
+            // 卓越评级数（≥85%）
+            const excellentCount = assessments.filter(a => (a.totalScore / 30) >= 0.85).length;
+            document.getElementById('excellentCount').textContent = excellentCount;
+
+            // 被评估人数（去重）
+            const uniqueEmployees = new Set(assessments.map(a => `${a.employeeName}-${a.department}`));
+            document.getElementById('participantCount').textContent = uniqueEmployees.size;
+        }
+
+        // 渲染维度图表
+        function renderDimensionChart(assessments) {
+            const dimensionAvg = [0, 0, 0, 0, 0, 0];
+
+            // 计算各维度平均分
+            assessments.forEach(assessment => {
+                for (let i = 1; i <= 6; i++) {
+                    dimensionAvg[i - 1] += assessment.scores[`dimension${i}`] || 0;
+                }
+            });
+
+            dimensionAvg.forEach((sum, index) => {
+                dimensionAvg[index] = sum / assessments.length;
+            });
+
+            // 渲染图表
+            const chartHtml = dimensionAvg.map((avg, index) => {
+                const percentage = (avg / 5) * 100;
+                return `
+                    <div class="dimension-row">
+                        <div class="dimension-name">${dimensionNames[index]}</div>
+                        <div class="dimension-bar-container">
+                            <div class="dimension-bar" style="width: ${percentage}%">
+                                ${avg >= 2 ? avg.toFixed(1) : ''}
+                            </div>
+                        </div>
+                        <div class="dimension-score">${avg.toFixed(1)}</div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('dimensionChart').innerHTML = chartHtml;
+        }
+
+        // 渲染表格
+        function renderTable(assessments) {
+            const tableHtml = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>评估编号</th>
+                            <th>被评估人</th>
+                            <th>部门</th>
+                            <th>维度1</th>
+                            <th>维度2</th>
+                            <th>维度3</th>
+                            <th>维度4</th>
+                            <th>维度5</th>
+                            <th>维度6</th>
+                            <th>总分</th>
+                            <th>评级</th>
+                            <th>提交时间</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${assessments.map(a => {
+                            const percentage = (a.totalScore / 30) * 100;
+                            let ratingClass = 'score-poor';
+                            let ratingText = '需要改进';
+
+                            if (percentage >= 85) {
+                                ratingClass = 'score-excellent';
+                                ratingText = '卓越非凡';
+                            } else if (percentage >= 70) {
+                                ratingClass = 'score-good';
+                                ratingText = '表现优秀';
+                            } else if (percentage >= 50) {
+                                ratingClass = 'score-average';
+                                ratingText = '符合预期';
+                            }
+
+                            return `
+                                <tr>
+                                    <td><span class="anonymous-id">${a.assessmentId}</span></td>
+                                    <td><strong>${a.employeeName}</strong></td>
+                                    <td>${a.department}</td>
+                                    <td>${a.scores.dimension1}</td>
+                                    <td>${a.scores.dimension2}</td>
+                                    <td>${a.scores.dimension3}</td>
+                                    <td>${a.scores.dimension4}</td>
+                                    <td>${a.scores.dimension5}</td>
+                                    <td>${a.scores.dimension6}</td>
+                                    <td><strong>${a.totalScore}</strong></td>
+                                    <td><span class="score-badge ${ratingClass}">${ratingText}</span></td>
+                                    <td>${new Date(a.submittedAt).toLocaleString('zh-CN')}</td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            document.getElementById('tableContainer').innerHTML = tableHtml;
+        }
+
+        // 显示空状态
+        function showEmptyState() {
+            document.getElementById('tableContainer').innerHTML = `
+                <div class="empty-state">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                    </svg>
+                    <h3>暂无评估数据</h3>
+                    <p>还没有任何匿名评估提交记录</p>
+                </div>
+            `;
+        }
+
+        // 导出CSV
+        function exportToCSV() {
+            const assessments = JSON.parse(localStorage.getItem('anonymousAssessments') || '[]');
+
+            if (assessments.length === 0) {
+                alert('没有数据可以导出');
+                return;
+            }
+
+            const csv = [
+                ['评估编号', '被评估人', '部门', '职位', '维度1', '维度2', '维度3', '维度4', '维度5', '维度6', '总分', '提交时间'].join(','),
+                ...assessments.map(a => [
+                    a.assessmentId,
+                    a.employeeName,
+                    a.department,
+                    a.position || '-',
+                    a.scores.dimension1,
+                    a.scores.dimension2,
+                    a.scores.dimension3,
+                    a.scores.dimension4,
+                    a.scores.dimension5,
+                    a.scores.dimension6,
+                    a.totalScore,
+                    new Date(a.submittedAt).toLocaleString('zh-CN')
+                ].join(','))
+            ].join('\n');
+
+            // 添加BOM以支持Excel打开中文
+            const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `匿名评估数据_${Date.now()}.csv`;
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // 清空数据
+        function clearData() {
+            if (confirm('确定要清空所有匿名评估数据吗？此操作不可恢复！')) {
+                if (confirm('再次确认：您确定要删除所有数据吗？')) {
+                    localStorage.removeItem('anonymousAssessments');
+                    alert('数据已清空');
+                    location.reload();
+                }
+            }
+        }
+
+        // 初始化
+        loadData();
+    </script>
+</body>
+</html>

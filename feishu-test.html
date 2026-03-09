@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>飞书回传测试工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: #F7F8FA;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #00796B 0%, #00695C 100%);
+            padding: 48px;
+            border-radius: 20px;
+            color: white;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 24px;
+        }
+
+        .card h2 {
+            font-size: 24px;
+            color: #1D2129;
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #1D2129;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #E5E8EF;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #00796B;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-right: 12px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00796B, #00695C);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 121, 107, 0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #00796B;
+            border: 2px solid #00796B;
+        }
+
+        .test-result {
+            margin-top: 24px;
+            padding: 20px;
+            border-radius: 12px;
+            display: none;
+        }
+
+        .test-result.show {
+            display: block;
+        }
+
+        .test-result.success {
+            background: #E8F7F0;
+            border-left: 4px solid #00B96B;
+        }
+
+        .test-result.error {
+            background: #FFECE8;
+            border-left: 4px solid #F54B5E;
+        }
+
+        .test-result.warning {
+            background: #FFF7E8;
+            border-left: 4px solid #FF9520;
+        }
+
+        .test-result h3 {
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        .test-result pre {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 13px;
+            margin-top: 12px;
+        }
+
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+
+        .checklist li {
+            padding: 12px 0;
+            border-bottom: 1px solid #E5E8EF;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .checklist li:last-child {
+            border-bottom: none;
+        }
+
+        .status-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .hint-box {
+            background: #E0F2F1;
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            border-left: 4px solid #00796B;
+        }
+
+        .hint-box h4 {
+            color: #00796B;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .hint-box p {
+            color: #4E5969;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .code-block {
+            background: #1D2129;
+            color: #00FF00;
+            padding: 16px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            margin: 12px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 飞书回传测试工具</h1>
+            <p>诊断和修复飞书机器人回传问题</p>
+        </div>
+
+        <!-- CORS警告 -->
+        <div class="card" style="background: #FFF7E8; border-left: 4px solid #FF9520;">
+            <h2 style="color: #FF9520;">⚠️ CORS跨域问题说明</h2>
+            <p style="color: #4E5969; line-height: 1.8; margin-bottom: 16px;">
+                如果看到"CORS policy"错误，这是浏览器安全限制，不是配置问题。
+            </p>
+
+            <h4 style="color: #FF9520; margin: 16px 0 12px 0;">✅ 立即解决（选择一个）：</h4>
+
+            <div style="background: white; padding: 20px; border-radius: 12px; margin-bottom: 12px;">
+                <h4 style="margin-bottom: 8px;">方法1：启动本地服务器（推荐）</h4>
+                <p style="color: #4E5969; margin-bottom: 12px;">双击 <code>启动服务器.bat</code> 文件，然后访问：</p>
+                <div class="code-block" style="background: #1D2129; color: #00FF00; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 13px;">
+http://localhost:8000/feishu-test.html
+                </div>
+            </div>
+
+            <div style="background: white; padding: 20px; border-radius: 12px; margin-bottom: 12px;">
+                <h4 style="margin-bottom: 8px;">方法2：使用curl命令测试（无CORS限制）</h4>
+                <p style="color: #4E5969; margin-bottom: 12px;">打开命令行，运行：</p>
+                <div class="code-block" style="background: #1D2129; color: #00FF00; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 13px;">
+curl -X POST "你的Webhook" -H "Content-Type: application/json" -d "{\"msg_type\":\"text\",\"content\":{\"text\":\"测试评估\"}}"
+                </div>
+            </div>
+
+            <div style="background: white; padding: 20px; border-radius: 12px;">
+                <h4 style="margin-bottom: 8px;">方法3：部署到GitHub Pages</h4>
+                <p style="color: #4E5969;">查看 <code>在线部署指南.md</code>，部署后就没有CORS问题了。</p>
+            </div>
+        </div>
+
+        <!-- 测试配置 -->
+        <div class="card">
+            <h2>📝 输入飞书Webhook地址</h2>
+
+            <div class="hint-box">
+                <h4>💡 如何获取Webhook地址？</h4>
+                <p>1. 在飞书群中点击右上角 "..." → 群设置<br>
+                2. 找到"群机器人" → 添加机器人 → 自定义机器人<br>
+                3. 设置名称和描述<br>
+                4. 安全设置选择"关键词"，输入：评估<br>
+                5. 复制生成的Webhook地址</p>
+            </div>
+
+            <div class="form-group">
+                <label>Webhook URL *</label>
+                <input type="text" id="webhookUrl" placeholder="https://open.feishu.cn/open-apis/bot/v2/hook/...">
+            </div>
+
+            <button class="btn btn-primary" onclick="runTest1()">🧪 测试1：发送文本消息</button>
+            <button class="btn btn-primary" onclick="runTest2()">🧪 测试2：发送评估卡片</button>
+            <button class="btn btn-secondary" onclick="runTest3()">🔍 测试3：检查配置</button>
+
+            <div class="test-result" id="testResult1"></div>
+            <div class="test-result" id="testResult2"></div>
+            <div class="test-result" id="testResult3"></div>
+        </div>
+
+        <!-- 常见问题 -->
+        <div class="card">
+            <h2>🐛 常见问题诊断</h2>
+
+            <ul class="checklist" id="checklist">
+                <li>
+                    <span class="status-icon">⏳</span>
+                    <span>等待测试...</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 解决方案 -->
+        <div class="card">
+            <h2>💡 解决方案</h2>
+
+            <h3 style="margin: 20px 0 12px 0;">问题1：Webhook URL格式错误</h3>
+            <p style="color: #4E5969; margin-bottom: 12px;">正确格式应该是：</p>
+            <div class="code-block">https://open.feishu.cn/open-apis/bot/v2/hook/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</div>
+
+            <h3 style="margin: 20px 0 12px 0;">问题2：关键词验证失败</h3>
+            <p style="color: #4E5969; margin-bottom: 12px;">飞书机器人安全设置中必须添加关键词"评估"，步骤：</p>
+            <ol style="color: #4E5969; padding-left: 24px; line-height: 1.8;">
+                <li>打开飞书群 → 群设置 → 群机器人</li>
+                <li>找到你的机器人 → 编辑</li>
+                <li>安全设置 → 关键词 → 输入：评估</li>
+                <li>保存设置</li>
+            </ol>
+
+            <h3 style="margin: 20px 0 12px 0;">问题3：网络或CORS问题</h3>
+            <p style="color: #4E5969; margin-bottom: 12px;">如果浏览器控制台显示CORS错误：</p>
+            <ol style="color: #4E5969; padding-left: 24px; line-height: 1.8;">
+                <li>确认是在本地文件（file://）打开，不是服务器（http://）</li>
+                <li>如果部署到服务器，需要后端代理转发请求</li>
+                <li>或者使用Chrome浏览器，右键 → 检查 → Console查看错误</li>
+            </ol>
+
+            <h3 style="margin: 20px 0 12px 0;">问题4：机器人被禁用</h3>
+            <p style="color: #4E5969; margin-bottom: 12px;">检查机器人状态：</p>
+            <ol style="color: #4E5969; padding-left: 24px; line-height: 1.8;">
+                <li>飞书群 → 群设置 → 群机器人</li>
+                <li>确认机器人显示为"已启用"</li>
+                <li>如果被禁用，点击启用</li>
+            </ol>
+
+            <h3 style="margin: 20px 0 12px 0;">问题5：消息发送频率限制</h3>
+            <p style="color: #4E5969; margin-bottom: 12px;">飞书机器人有频率限制：</p>
+            <ol style="color: #4E5969; padding-left: 24px; line-height: 1.8;">
+                <li>单个机器人：每分钟最多20条消息</li>
+                <li>如果超过限制，等待1分钟后重试</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        // 测试1：发送简单文本消息
+        async function runTest1() {
+            const webhookUrl = document.getElementById('webhookUrl').value.trim();
+            const resultDiv = document.getElementById('testResult1');
+            const checklist = document.getElementById('checklist');
+
+            if (!webhookUrl) {
+                showResult(resultDiv, 'error', '❌ 测试失败', '请先输入Webhook URL');
+                return;
+            }
+
+            resultDiv.innerHTML = '<p>⏳ 正在测试文本消息发送...</p>';
+            resultDiv.className = 'test-result show warning';
+
+            try {
+                // 验证URL格式
+                if (!webhookUrl.startsWith('https://open.feishu.cn/')) {
+                    throw new Error('Webhook URL格式错误，应该以 https://open.feishu.cn/ 开头');
+                }
+
+                const testMessage = {
+                    msg_type: 'text',
+                    content: {
+                        text: '🎉 测试成功！飞书机器人回传功能正常。\n这是一条测试消息，包含关键词：评估'
+                    }
+                };
+
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(testMessage)
+                });
+
+                const result = await response.json();
+
+                if (result.code === 0) {
+                    showResult(resultDiv, 'success', '✅ 测试1通过',
+                        '文本消息发送成功！请检查飞书群是否收到测试消息。');
+
+                    updateChecklist(checklist, [
+                        '✅ Webhook URL格式正确',
+                        '✅ 网络连接正常',
+                        '✅ 飞书机器人已启用',
+                        '✅ 关键词验证通过'
+                    ]);
+                } else {
+                    throw new Error(`飞书返回错误: ${result.msg || '未知错误'}`);
+                }
+            } catch (error) {
+                showResult(resultDiv, 'error', '❌ 测试1失败',
+                    `错误信息：${error.message}\n\n请检查：\n1. Webhook URL是否正确\n2. 飞书机器人是否已启用\n3. 安全设置中是否添加关键词"评估"\n4. 网络连接是否正常`);
+
+                updateChecklist(checklist, [
+                    error.message.includes('URL') ? '❌ Webhook URL格式错误' : '✅ Webhook URL格式正确',
+                    error.message.includes('网络') || error.message.includes('fetch') ? '❌ 网络连接失败' : '✅ 网络连接正常',
+                    error.message.includes('关键词') ? '❌ 关键词验证失败' : '⚠️ 需要检查关键词设置',
+                    '⚠️ 请运行测试2检查消息格式'
+                ]);
+            }
+        }
+
+        // 测试2：发送完整评估卡片
+        async function runTest2() {
+            const webhookUrl = document.getElementById('webhookUrl').value.trim();
+            const resultDiv = document.getElementById('testResult2');
+
+            if (!webhookUrl) {
+                showResult(resultDiv, 'error', '❌ 测试失败', '请先输入Webhook URL');
+                return;
+            }
+
+            resultDiv.innerHTML = '<p>⏳ 正在测试评估卡片发送...</p>';
+            resultDiv.className = 'test-result show warning';
+
+            try {
+                const testCard = {
+                    msg_type: 'interactive',
+                    card: {
+                        header: {
+                            title: {
+                                content: '📊 收到新的匿名评估（测试）',
+                                tag: 'plain_text'
+                            },
+                            template: 'turquoise'
+                        },
+                        elements: [
+                            {
+                                tag: 'div',
+                                text: {
+                                    content: '**被评估人**: 张三（测试）\n**部门**: 技术部\n**职位**: 技术总监\n**评估编号**: `ANON-TEST-123456`\n**提交时间**: ' + new Date().toLocaleString('zh-CN'),
+                                    tag: 'lark_md'
+                                }
+                            },
+                            {
+                                tag: 'hr'
+                            },
+                            {
+                                tag: 'div',
+                                text: {
+                                    content: '**📈 评分详情**',
+                                    tag: 'lark_md'
+                                }
+                            },
+                            {
+                                tag: 'div',
+                                text: {
+                                    content: '战略目标的承接者: **5** 分\n经营的责任者: **4** 分\n产品交付的责任者: **5** 分\n技术创新的引领者: **5** 分\n组织的领导者: **4** 分\n跨部门协作的统筹者: **5** 分',
+                                    tag: 'lark_md'
+                                }
+                            },
+                            {
+                                tag: 'hr'
+                            },
+                            {
+                                tag: 'div',
+                                text: {
+                                    content: '**总分**: 28/30 分 (93.3%)\n**评级**: 卓越非凡',
+                                    tag: 'lark_md'
+                                }
+                            },
+                            {
+                                tag: 'note',
+                                elements: [
+                                    {
+                                        tag: 'plain_text',
+                                        content: '这是一条测试消息，用于验证评估卡片格式'
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                };
+
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(testCard)
+                });
+
+                const result = await response.json();
+
+                if (result.code === 0) {
+                    showResult(resultDiv, 'success', '✅ 测试2通过',
+                        '评估卡片发送成功！\n\n请检查飞书群是否收到完整的评估卡片。\n\n如果收到，说明飞书回传功能完全正常！');
+                } else {
+                    throw new Error(`飞书返回错误: ${result.msg || '未知错误'} (code: ${result.code})`);
+                }
+            } catch (error) {
+                showResult(resultDiv, 'error', '❌ 测试2失败',
+                    `错误信息：${error.message}\n\n可能原因：\n1. 消息卡片格式不正确\n2. 关键词验证失败（需要在消息中包含"评估"）\n3. 机器人权限不足`);
+            }
+        }
+
+        // 测试3：检查配置
+        function runTest3() {
+            const webhookUrl = document.getElementById('webhookUrl').value.trim();
+            const resultDiv = document.getElementById('testResult3');
+            const checklist = document.getElementById('checklist');
+
+            if (!webhookUrl) {
+                showResult(resultDiv, 'error', '❌ 检查失败', '请先输入Webhook URL');
+                return;
+            }
+
+            const checks = [];
+
+            // 检查URL格式
+            if (webhookUrl.startsWith('https://open.feishu.cn/open-apis/bot/v2/hook/')) {
+                checks.push('✅ Webhook URL格式正确');
+            } else {
+                checks.push('❌ Webhook URL格式错误');
+            }
+
+            // 检查URL长度
+            if (webhookUrl.length > 80) {
+                checks.push('✅ Webhook URL长度正常');
+            } else {
+                checks.push('⚠️ Webhook URL可能不完整');
+            }
+
+            // 检查是否包含hook ID
+            const hookIdMatch = webhookUrl.match(/hook\/(.+)$/);
+            if (hookIdMatch && hookIdMatch[1].length > 30) {
+                checks.push('✅ Hook ID格式正确');
+            } else {
+                checks.push('❌ Hook ID格式错误或缺失');
+            }
+
+            // 检查localStorage配置
+            const autoSubmitConfig = JSON.parse(localStorage.getItem('autoSubmitConfig') || '{}');
+            if (autoSubmitConfig.mode === 'feishu' && autoSubmitConfig.feishuWebhook) {
+                checks.push('✅ localStorage中已保存配置');
+                checks.push(`   配置的Webhook: ${autoSubmitConfig.feishuWebhook.substring(0, 50)}...`);
+            } else {
+                checks.push('⚠️ localStorage中未保存配置（需要通过URL参数或配置页面设置）');
+            }
+
+            updateChecklist(checklist, checks);
+
+            const allPassed = checks.every(c => c.startsWith('✅'));
+            if (allPassed) {
+                showResult(resultDiv, 'success', '✅ 配置检查通过',
+                    '所有配置项检查正常！\n\n建议：\n1. 运行测试1和测试2验证实际发送\n2. 确认飞书群中机器人已启用\n3. 确认安全设置中添加了关键词"评估"');
+            } else {
+                showResult(resultDiv, 'warning', '⚠️ 发现配置问题',
+                    '请检查上方清单中标记为❌的项目\n\n修复后重新运行测试');
+            }
+        }
+
+        // 显示测试结果
+        function showResult(div, type, title, message) {
+            div.className = `test-result show ${type}`;
+            div.innerHTML = `
+                <h3>${title}</h3>
+                <pre>${message}</pre>
+            `;
+        }
+
+        // 更新检查清单
+        function updateChecklist(ul, items) {
+            ul.innerHTML = items.map(item => {
+                const icon = item.startsWith('✅') ? '✅' :
+                            item.startsWith('❌') ? '❌' :
+                            item.startsWith('⚠️') ? '⚠️' : '⏳';
+                return `
+                    <li>
+                        <span class="status-icon">${icon}</span>
+                        <span>${item.replace(/^[✅❌⚠️⏳]\s*/, '')}</span>
+                    </li>
+                `;
+            }).join('');
+        }
+
+        // 页面加载时自动加载配置
+        window.addEventListener('load', () => {
+            const autoSubmitConfig = JSON.parse(localStorage.getItem('autoSubmitConfig') || '{}');
+            if (autoSubmitConfig.mode === 'feishu' && autoSubmitConfig.feishuWebhook) {
+                document.getElementById('webhookUrl').value = autoSubmitConfig.feishuWebhook;
+            }
+        });
+    </script>
+</body>
+</html>
